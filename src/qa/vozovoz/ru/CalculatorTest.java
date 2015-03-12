@@ -168,7 +168,7 @@ public class CalculatorTest {
 
         //VAR 8
         calculateTest("0.8","0.4","0.4","40","1",5110);
-
+//g
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //CHANGE TO MSK-SPB using URL//
         selenium.open("/calculate-the-order?calculationId=54fff5cdf2f2862e3c88419e");
