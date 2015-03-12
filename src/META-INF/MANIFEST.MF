@@ -1,0 +1,2 @@
+Main-Class: qa.vozovoz.ru.CalculatorTest
+Manifest-Version: 1.0

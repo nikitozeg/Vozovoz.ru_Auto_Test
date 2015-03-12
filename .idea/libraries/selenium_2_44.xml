@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="selenium-2.44">
+    <CLASSES>
+      <root url="file://$USER_HOME$/Desktop/SeleniumSuite/selenium-java-2.44.0/selenium-2.44.0" />
+      <root url="file://$USER_HOME$/Desktop/SeleniumSuite/selenium-java-2.44.0/selenium-2.44.0" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Desktop/SeleniumSuite/selenium-java-2.44.0/selenium-2.44.0" />
+      <root url="file://$USER_HOME$/Desktop/SeleniumSuite/selenium-java-2.44.0/selenium-2.44.0" />
+    </SOURCES>
+    <jarDirectory url="file://$USER_HOME$/Desktop/SeleniumSuite/selenium-java-2.44.0/selenium-2.44.0" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/Desktop/SeleniumSuite/selenium-java-2.44.0/selenium-2.44.0" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/Desktop/SeleniumSuite/selenium-java-2.44.0/selenium-2.44.0" recursive="false" type="SOURCES" />
+    <jarDirectory url="file://$USER_HOME$/Desktop/SeleniumSuite/selenium-java-2.44.0/selenium-2.44.0" recursive="false" type="SOURCES" />
+  </library>
+</component>
