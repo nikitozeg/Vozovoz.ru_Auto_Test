@@ -3,6 +3,7 @@ package qa.vozovoz.ru;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -22,6 +23,41 @@ public class CalculatorTest {
 
     String timeStamp = new SimpleDateFormat("HH.mm число dd месяц MM").format(Calendar.getInstance().getTime());
     int counter=0;
+
+    public void login() throws InterruptedException {
+        // ОФОРМЛЕНИЕ
+
+        selenium.open("/");
+        for (int second = 0;; second++) {
+            if (second >= 10) fail("timeout");
+            try { if (selenium.isElementPresent("css=button.btn")) break; } catch (Exception e) {}
+            Thread.sleep(1000);
+        }
+
+        selenium.click("link=Личный кабинет");
+        for (int second = 0;; second++) {
+            if (second >= 10) fail("timeout");
+            try { if (Pattern.compile("Войти").matcher(selenium.getText("css=button.btn.btn-default")).find()) break; } catch (Exception e) {}
+            Thread.sleep(1000);
+        }
+
+        selenium.click("name=login");
+        selenium.type("name=login", "9516853260");
+
+        selenium.click("name=password");
+        selenium.type("name=password", "72621010a");
+
+        selenium.click("css=button.btn.btn-default");
+        for (int second = 0;; second++) {
+            if (second >= 10) fail("timeout");
+            try { if ("Мои данные".equals(selenium.getText("link=Мои данные"))) break; } catch (Exception e) {}
+            Thread.sleep(1000);
+        }
+
+        selenium.click("link=Оформление заказа");
+
+
+    }
 
     public void waitLoad() throws InterruptedException {
         for (int second = 0; ; second++) {
@@ -76,6 +112,21 @@ public class CalculatorTest {
         selenium.click("xpath=(//*[@test-id='order.calc'])");
         }
 
+    public void chooseAllPackage(){
+        selenium.click("xpath=(//*[@test-id='packages.add'])");
+        selenium.click("xpath=(//*[@test-id='packages.bag1'])");
+        selenium.click("xpath=(//*[@test-id='packages.bag2'])");
+        selenium.click("xpath=(//*[@test-id='packages.sealPackage'])");
+        selenium.click("xpath=(//*[@test-id='packages.safePackage'])");
+        selenium.click("xpath=(//*[@test-id='packages.box1'])");//40*20*20
+        selenium.click("xpath=(//*[@test-id='packages.box2'])");
+        selenium.click("xpath=(//*[@test-id='packages.box3'])");
+        selenium.click("xpath=(//*[@test-id='packages.box4'])");
+        selenium.click("xpath=(//*[@test-id='packages.hardPackage'])");
+        selenium.click("xpath=(//*[@test-id='packages.extraPackage'])");
+        selenium.click("xpath=(//*[@test-id='packages.bubbleFilm'])");
+    }
+
     public void assertCost(int cost) throws InterruptedException {
         Thread.sleep(500);
         selenium.click("xpath=(//*[@test-id='order.calc'])");
@@ -92,42 +143,68 @@ public class CalculatorTest {
 
        }
 
-    public void chooseAllPackage(){
-        selenium.click("xpath=(//*[@test-id='packages.add'])");
-        selenium.click("xpath=(//*[@test-id='packages.bag1'])");
-        selenium.click("xpath=(//*[@test-id='packages.bag2'])");
-        selenium.click("xpath=(//*[@test-id='packages.sealPackage'])");
-        selenium.click("xpath=(//*[@test-id='packages.safePackage'])");
-        selenium.click("xpath=(//*[@test-id='packages.box1'])");//40*20*20
-        selenium.click("xpath=(//*[@test-id='packages.box2'])");
-        selenium.click("xpath=(//*[@test-id='packages.box3'])");
-        selenium.click("xpath=(//*[@test-id='packages.box4'])");
-        selenium.click("xpath=(//*[@test-id='packages.hardPackage'])");
-        selenium.click("xpath=(//*[@test-id='packages.extraPackage'])");
-        selenium.click("xpath=(//*[@test-id='packages.bubbleFilm'])");
+    public void checkOut() throws InterruptedException {
+        // ОФОРМЛЕНИЕ
+        selenium.click("xpath=(//*[@test-id='order.create'])");
+        selenium.type("name=shipperFizFIO", "иванов никита");
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
+        selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (951) 685-32-60");
+
+        // ОФОРМИТЬ
+        selenium.click("xpath=(//*[@test-id='order.create'])");
+
     }
 
+    public void getOrderNumber() throws InterruptedException {
 
+        for (int second = 0;; second++) {
+            if (second >= 60) fail("timeout");
+            try { if (Pattern.compile("[0]").matcher(selenium.getText("css=span.selection.ng-binding")).find()) break; } catch (Exception e) {}
+            Thread.sleep(1000);
+        }
+
+        // копируем номер заказа
+        String zzzz = selenium.getText("css=span.selection.ng-binding");
+        // вставить номер заказа
+        selenium.type("//div[@id='body']/div[2]/app-find-order/section/div/div/div/form/div/div/input", zzzz);
+        selenium.click("css=div.col-md-4 > button.btn");
+        for (int second = 0;; second++) {
+            if (second >= 60) fail("timeout");
+            try { if (Pattern.compile("[0]").matcher(selenium.getText("css=h3.ng-binding")).find()) break; } catch (Exception e) {}
+            Thread.sleep(1000);
+        }
+
+        // Проверка ОТСЛЕЖИВАНИЯ
+
+        Assert.assertTrue(selenium.isElementPresent("css=h4.list-group-item-heading"));
+        String summa = selenium.getText("css=p.list-group-item-text.ng-binding");
+        Assert.assertTrue(selenium.isElementPresent("//div[@id='body']/div[2]/app-find-order/section[2]/div/div[2]/div[2]/h4"));
+        Assert.assertTrue(selenium.isElementPresent("//div[@id='body']/div[2]/app-find-order/section[2]/div/div[2]/div[3]/h4"));
+
+    }
 
     private Selenium selenium;
     Date date = new Date();
 
     @Before
     public void setUp() throws Exception {
-        selenium = new DefaultSelenium("localhost", 4444, "*chrome", "http://vozovoz.ru/");
+        selenium = new DefaultSelenium("localhost", 4444, "*chrome", "http://qa.vozovoz.ru/");
         selenium.start();
     }
 
     @Test
     public void testVar9SpbMsk() throws Exception {
+        login();
+        while (1==1) {
         selenium.open("/");
         selenium.click("link=Оформление заказа");
-
         // Ожидание загрузки страницы расчета (ждем появления строки ПЕРЕВОЗКА)
          waitLoad();
-
+            selenium.click("//div[@id='main']/ng-form/div/div/app-calculator/div/div/div/div/div/div/app-calculator-location/div/ng-form/div/label[2]");
+            selenium.click("//div[@id='main']/ng-form/div/div/app-calculator/div/div/div/div/div/div[2]/app-calculator-location/div/ng-form/div/label[2]");
         // VAR9 (1-9)
-        calculateTest("0.8","0.4","0.4","2.4","1",690);
+       /* calculateTest("0.8","0.4","0.4","2.4","1",690);
         // PARAM2
         calculateTest("0.8","0.4","0.4","2.5","1",800);
         // PARAM4
@@ -144,7 +221,7 @@ public class CalculatorTest {
         calculateTest("0.8","0.4","0.4","19.9","1",950);
         // PARAM8
         calculateTest("0.8","0.4","0.4","40","1",960);
-
+*/
 
         //VAR 0(correspond check)
         selenium.click("xpath=(//*[@test-id='unit.remove'])");
@@ -154,7 +231,7 @@ public class CalculatorTest {
         assertCost(550);
 
         //VAR 1(1)
-        selenium.click("xpath=(//*[@test-id='correspondence.remove'])");
+     /*   selenium.click("xpath=(//*[@test-id='correspondence.remove'])");
         selenium.click("xpath=(//*[@test-id='unit.add'])");
         addFloors();
         chooseAllPackage();
@@ -168,12 +245,12 @@ public class CalculatorTest {
 
         //VAR 8
         calculateTest("0.8","0.4","0.4","40","1",5110);
-//g
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //CHANGE TO MSK-SPB using URL//
         selenium.open("/calculate-the-order?calculationId=54fff5cdf2f2862e3c88419e");
         // VAR 3
-        Thread.sleep(5000);
+                Thread.sleep(5000);
         assertCost(4580);
 
 
@@ -233,17 +310,10 @@ public class CalculatorTest {
         selenium.click("xpath=(//*[@test-id='packages.extraPackage'])");
         selenium.click("xpath=(//*[@test-id='packages.bubbleFilm'])");
         selenium.click("xpath=(//*[@test-id='packages.box4'])");
-        assertCost(2350);
+        assertCost(2350);*/
 
-        // ОФОРМЛЕНИЕ
-        selenium.click("xpath=(//*[@test-id='order.create'])");
-        selenium.type("name=shipperFizFIO", "иванов никита");
-        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
-        selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
-        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (951) 685-32-60");
-
-        // ОФОРМИТЬ
-        selenium.click("xpath=(//*[@test-id='order.create'])");
+        checkOut();
+        getOrderNumber();}
     }
 
     @After
