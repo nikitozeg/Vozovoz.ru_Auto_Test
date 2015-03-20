@@ -20,7 +20,7 @@ public class CalculatorTest {
 
     public void login() throws InterruptedException {
             // ОФОРМЛЕНИЕ
-            selenium.open("/");
+        /*    selenium.open("/");
             for (int second = 0; ; second++) {
                 if (second >= 10) fail("timeout");
                 try {
@@ -29,8 +29,8 @@ public class CalculatorTest {
                 }
                 Thread.sleep(1000);
             }
-
-            selenium.click("link=Личный кабинет");
+*/
+           // selenium.click("link=Личный кабинет");
             for (int second = 0; ; second++) {
                 if (second >= 10) fail("timeout");
                 try {
@@ -50,7 +50,7 @@ public class CalculatorTest {
             for (int second = 0; ; second++) {
                 if (second >= 10) fail("timeout");
                 try {
-                    if ("Мои данные".equals(selenium.getText("link=Мои данные"))) break;
+                    if ("Мои данные".equals(selenium.getText("link=Мои данные"))) { selenium.click("link=Оформление заказа"); setContacts();  break;}
                 } catch (Exception e) {
                 }
                 Thread.sleep(1000);
@@ -82,7 +82,7 @@ public class CalculatorTest {
         selenium.type("xpath=(//input[@type='number'])[2]", "3");
     }
 
-    public void assertMultipleCostAndCheckOut(String l, String w, String h, String weight, String amount, int cost) throws InterruptedException {
+    public void assertAndCheckOut(String l, String w, String h, String weight, String amount, int cost) throws InterruptedException {
         try {
             selenium.type("xpath=(//*[@test-id='unit.length'])[1]", l);
             selenium.type("xpath=(//*[@test-id='unit.width'])[1]", w);
@@ -92,14 +92,13 @@ public class CalculatorTest {
             Thread.sleep(500); //Задержка
             selenium.click("xpath=(//*[@test-id='order.calc'])");
             Thread.sleep(500);
-        } catch (Exception e) {
+        } catch (SeleniumException e) {
+            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\unit filling is fail " + cost + "руб, произошло в " + timeStamp + ".png", "");
         }
 
         for (int second = 0; ; second++) {
             if (second >= 4) {
-                Thread.sleep(3000);
                 selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + "руб, произошло в " + timeStamp + ".png", "");
-                //fail("timeout");
                 break;
             }
             try {
@@ -108,9 +107,35 @@ public class CalculatorTest {
                     break;
                 }
             } catch (Exception e) {
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + "руб, произошло в " + timeStamp + ".png", "");
             }
-            Thread.sleep(30000);
+            Thread.sleep(6000);
         }
+
+    }
+
+    public void checkOut() throws InterruptedException {
+         try {selenium.click("link=Личный кабинет");
+             login();
+         }
+            catch(SeleniumException e) {}
+        // ОФОРМЛЕНИЕ
+        try {
+            selenium.click("xpath=(//*[@test-id='order.create'])");
+        } catch (SeleniumException e) {
+            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\click on orderCreate is fail " + timeStamp + ".png", "");
+            System.out.print(e.toString());
+        } finally {
+            Thread.sleep(30000);
+            selenium.click("xpath=(//*[@test-id='order.backward'])");
+        }
+    }
+
+    public void setContacts() throws InterruptedException {
+        selenium.type("name=shipperFizFIO", "иванов никита");
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
+        selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
 
     }
 
@@ -146,7 +171,7 @@ public class CalculatorTest {
         Thread.sleep(500);
         for (int second = 0; ; second++) {
             if (second >= 5) {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + "руб, произошло в " + timeStamp + ".png", "");
                 //fail("timeout");
                 break;
@@ -156,24 +181,22 @@ public class CalculatorTest {
                     checkOut();
                     break;
                 }
+                else selenium.click("xpath=(//*[@test-id='order.calc'])");
             } catch (Exception e) {
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\not found order.calc произошло в " + timeStamp + ".png", "");
+                System.out.print(e.toString());
             }
-            Thread.sleep(40000);
+            Thread.sleep(6000);
         }
     }
 
-    public void checkOut() throws InterruptedException {
-        // ОФОРМЛЕНИЕ
-        try {
-            selenium.click("xpath=(//*[@test-id='order.create'])");
-            Thread.sleep(5000);
-        } catch (SeleniumException e) {
-            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\click on orderCreate is fail " + timeStamp + ".png", "");
-            System.out.print(e.toString());
-        } finally {
-            Thread.sleep(5000);
-            selenium.click("xpath=(//*[@test-id='order.backward'])");
-        }
+    public void setCities(String sender, String receiver) throws InterruptedException {
+        selenium.select("//div[@id='main']/div/section/div/div/div/div[2]/div/div/div/div/app-homepage-calculator/div/form/div/div/div/select", "label="+sender);
+        selenium.select("//div[@id='main']/div/section/div/div/div/div[2]/div/div/div/div/app-homepage-calculator/div/form/div[2]/div/div/select", "label=" + receiver);
+        selenium.click("css=div.count > button.btn");
+        waitLoad();
+        selenium.click("xpath=(//*[@test-id='to.use.address'])");
+        selenium.click("xpath=(//*[@test-id='from.use.address'])");
     }
 
     public void getOrderNumber() throws InterruptedException {
@@ -220,6 +243,8 @@ public class CalculatorTest {
 
     private Selenium selenium;
 
+
+
     @Before
     public void setUp() throws Exception {
         selenium = new DefaultSelenium("localhost", 4444, "*chrome", "http://vozovoz.ru/");
@@ -228,41 +253,66 @@ public class CalculatorTest {
 
     @Test
     public void testVar9SpbMsk() throws Exception {
-        getOrderNumber();
-        login();
+       // getOrderNumber();
+
 
         while (true) {
-            selenium.open("/");
-            selenium.click("link=Оформление заказа");
-            //Ожидание загрузки страницы расчета (ждем появления строки ПЕРЕВОЗКА)
-            waitLoad();
-
-            // VAR 9 (1-9)
+         /*   selenium.open("/calculate-the-order?calculationId=5509f1c0560d9f354b715cc4");
+            Thread.wait(1000);
             selenium.type("name=shipperFizFIO", "иванов никита");
             selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
             selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
             selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
 
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
+            //assertCost(920);
+checkOut();
+            selenium.open("/calculate-the-order?calculationId=5509f493560d9f354b715cf4");
+            selenium.type("name=shipperFizFIO", "иванов никита");
+            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
+            selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
+            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
+
+           // assertCost(1000);
+            //assertCost(920);
+            checkOut();
+            selenium.open("/calculcate-the-order?calculationId=5509f562560d9f354b715d00");
+            selenium.type("name=shipperFizFIO", "иванов никита");
+            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
+            selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
+            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
+
+           // assertCost(1090);
+            //assertCost(920);
+            checkOut();*/
+            selenium.open("/");
+          //  getOrderNumber();
+            selenium.click("link=Оформление заказа");
+            //Ожидание загрузки страницы расчета (ждем появления строки ПЕРЕВОЗКА)
+            waitLoad();
+
+            // VAR 9 (1-9)
+            setContacts();
+
+            assertAndCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
             // PARAM2
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
+            assertAndCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
             // PARAM4
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "5", "1", 940);
+            assertAndCheckOut("0.8", "0.4", "0.4", "5", "1", 940);
             // PARAM3
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "4.9", "1", 800);
+            assertAndCheckOut("0.8", "0.4", "0.4", "4.9", "1", 800);
             // PARAM5
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "9.9", "1", 940);
+            assertAndCheckOut("0.8", "0.4", "0.4", "9.9", "1", 940);
             // PARAM6
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "10", "1", 950);
+            assertAndCheckOut("0.8", "0.4", "0.4", "10", "1", 950);
             // PARAM8
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "20", "1", 960);
+            assertAndCheckOut("0.8", "0.4", "0.4", "20", "1", 960);
             // PARAM7
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
+            assertAndCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
             // PARAM8
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
+            assertAndCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
 
             //CHECK 0.1*0.1*0.1
-            assertMultipleCostAndCheckOut("0.1", "0.1", "0.1", "1", "1", 690);
+            assertAndCheckOut("0.1", "0.1", "0.1", "1", "1", 690);
 
             // VAR 0(correspond check)
             selenium.click("xpath=(//*[@test-id='unit.remove'])");
@@ -276,35 +326,29 @@ public class CalculatorTest {
             selenium.click("xpath=(//*[@test-id='unit.add'])");
             addFloors();
             chooseAllPackage();
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "10", "1", 2640);
+            assertAndCheckOut("0.8", "0.4", "0.4", "10", "1", 2640);
 
 
             //VAR 1(2)
-            selenium.type("name=shipperFizFIO", "иванов никита");
-            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
-            selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
-            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "39.9", "1", 4060);
+            setContacts();
+            assertAndCheckOut("0.8", "0.4", "0.4", "39.9", "1", 4060);
 
             //VAR 2
-            assertMultipleCostAndCheckOut("1", "0.4", "0.4", "10", "1", 4230);
+            assertAndCheckOut("1", "0.4", "0.4", "10", "1", 4230);
 
             //VAR 8
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "40", "1", 5110);
+            assertAndCheckOut("0.8", "0.4", "0.4", "40", "1", 5110);
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //CHANGE TO MSK-SPB using URL//
-            selenium.open("/calculate-the-order?calculationId=54fff5cdf2f2862e3c88419e");
+            selenium.open("/calculate-the-order?calculationId=54fff5cdf2f2862e3c88419e"); //RU!
             //       selenium.open("/calculate-the-order?calculationId=550319c5600469746778b9db"); //QA!!!
 
             // VAR 3
             Thread.sleep(1000);
 
             selenium.click("xpath=(//*[@test-id='order.create'])");
-            selenium.type("name=shipperFizFIO", "иванов никита");
-            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
-            selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
-            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
+            setContacts();
             selenium.click("link=Груз");
             assertCost(4580);
 
@@ -334,27 +378,27 @@ public class CalculatorTest {
             selenium.click("xpath=(//*[@test-id='to.work.hide'])");
             selenium.click("xpath=(//*[@test-id='unit.remove'])");
             selenium.click("xpath=(//*[@test-id='correspondence.remove'])");
-            assertMultipleCostAndCheckOut("0.4", "0.2", "0.2", "5", "3", 1420);
+            assertAndCheckOut("0.4", "0.2", "0.2", "5", "3", 1420);
 
             // VAR 9 (10-18)
             selenium.click("xpath=(//*[@test-id='packages.remove'])");
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
+            assertAndCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
             // PARAM2
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
+            assertAndCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
             // PARAM4
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "5", "1", 940);
+            assertAndCheckOut("0.8", "0.4", "0.4", "5", "1", 940);
             // PARAM3
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "4.9", "1", 800);
+            assertAndCheckOut("0.8", "0.4", "0.4", "4.9", "1", 800);
             // PARAM5
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "9.9", "1", 940);
+            assertAndCheckOut("0.8", "0.4", "0.4", "9.9", "1", 940);
             // PARAM6
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "10", "1", 950);
+            assertAndCheckOut("0.8", "0.4", "0.4", "10", "1", 950);
             // PARAM8
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "20", "1", 960);
+            assertAndCheckOut("0.8", "0.4", "0.4", "20", "1", 960);
             // PARAM7
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
+            assertAndCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
             // PARAM8
-            assertMultipleCostAndCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
+            assertAndCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
 
             // VAR 6
             selenium.open("/");
@@ -372,12 +416,40 @@ public class CalculatorTest {
             selenium.click("xpath=(//*[@test-id='packages.bubbleFilm'])");
             selenium.click("xpath=(//*[@test-id='packages.box4'])");
 
-            selenium.type("name=shipperFizFIO", "иванов никита");
-            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
-            selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
-            selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
-            selenium.click("link=Груз");
+            setContacts();
             assertCost(2350);
+
+            try {
+                selenium.open("/");
+                Thread.sleep(3000);
+                setCities("Волгоград", "Воронеж");
+                setContacts();
+                assertAndCheckOut("0.1", "0.1", "0.1", "1", "1", 580);
+
+
+                selenium.open("/");
+                Thread.sleep(3000);
+                setCities("Краснодар", "Ростов-на-Дону");
+                setContacts();
+                assertAndCheckOut("0.1", "0.1", "0.1", "1", "1", 540);
+
+
+                selenium.open("/");
+                Thread.sleep(3000);
+                setCities("Самара", "Саратов");
+                setContacts();
+                assertAndCheckOut("0.1", "0.1", "0.1", "1", "1", 570);
+
+                selenium.open("/");
+                Thread.sleep(3000);
+                setCities("Ставрополь", "Волгоград");
+                setContacts();
+                assertAndCheckOut("0.1", "0.1", "0.1", "1", "1", 610);
+
+
+            } catch (SeleniumException e){
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Cities checking is FAIL.png", "");
+            }
 
            /* Writer output = new BufferedWriter(new FileWriter(file));
             output.write(selenium.getLog());
