@@ -15,7 +15,6 @@ import static org.junit.Assert.fail;
 
 public class CalculatorTest {
 
-    String timeStamp = new SimpleDateFormat("HH.mm дата dd.MM").format(Calendar.getInstance().getTime());
     int counter = 0;
 
     public void login() throws InterruptedException {
@@ -61,7 +60,7 @@ public class CalculatorTest {
     public void waitLoad() throws InterruptedException {
         for (int second = 0; ; second++) {
             if (second >= 10) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Не прогрузилось слово Перевозка, произошло в " + timeStamp + ".png", "");
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Не прогрузилось слово Перевозка " + System.currentTimeMillis() + ".png", "");
                 //fail("timeout");
                 break;
             }
@@ -93,12 +92,12 @@ public class CalculatorTest {
             selenium.click("xpath=(//*[@test-id='order.calc'])");
             Thread.sleep(500);
         } catch (SeleniumException e) {
-            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\unit filling is fail " + cost + "руб, произошло в " + timeStamp + ".png", "");
+            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\unit filling is fail " + cost  + " "+ System.currentTimeMillis() + ".png", "");
         }
 
         for (int second = 0; ; second++) {
             if (second >= 4) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + "руб, произошло в " + timeStamp + ".png", "");
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + " "+ System.currentTimeMillis() + ".png", "");
                 break;
             }
             try {
@@ -107,7 +106,7 @@ public class CalculatorTest {
                     break;
                 }
             } catch (Exception e) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + "руб, произошло в " + timeStamp + ".png", "");
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + " "+ System.currentTimeMillis() + ".png", "");
             }
             Thread.sleep(6000);
         }
@@ -123,7 +122,7 @@ public class CalculatorTest {
         try {
             selenium.click("xpath=(//*[@test-id='order.create'])");
         } catch (SeleniumException e) {
-            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\click on orderCreate is fail " + timeStamp + ".png", "");
+            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\click on orderCreate is fail " + " "+ System.currentTimeMillis() + ".png", "");
             System.out.print(e.toString());
         } finally {
             Thread.sleep(30000);
@@ -172,7 +171,7 @@ public class CalculatorTest {
         for (int second = 0; ; second++) {
             if (second >= 5) {
                 Thread.sleep(1000);
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + "руб, произошло в " + timeStamp + ".png", "");
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + " "+ System.currentTimeMillis() + ".png", "");
                 //fail("timeout");
                 break;
             }
@@ -183,7 +182,7 @@ public class CalculatorTest {
                 }
                 else selenium.click("xpath=(//*[@test-id='order.calc'])");
             } catch (Exception e) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\not found order.calc произошло в " + timeStamp + ".png", "");
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\not found order.calc произошло в  "+System.currentTimeMillis()+".png", "");
                 System.out.print(e.toString());
             }
             Thread.sleep(6000);
@@ -213,7 +212,7 @@ public class CalculatorTest {
             try {
                 if (Pattern.compile("ООО \"В-СТАР\"").matcher(selenium.getText("css=span.selection.ng-binding")).find()) break;
             } catch (Exception e) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\traceCargo is fail " + timeStamp + ".png", "");
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\traceCargo is fail  "+System.currentTimeMillis()+".png", "");
             }
             Thread.sleep(1000);
         }
@@ -448,7 +447,7 @@ checkOut();
 
 
             } catch (SeleniumException e){
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Cities checking is FAIL.png", "");
+                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Cities checking is FAIL "+System.currentTimeMillis()+".png", "");
             }
 
            /* Writer output = new BufferedWriter(new FileWriter(file));
