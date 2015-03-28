@@ -138,7 +138,7 @@ public class CalculatorTest {
         selenium.type("css=div.col-xs-6.consignee > app-calculator-side-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
         selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
         selenium.type("css=div.col-xs-6.consignee > app-calculator-side-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
-
+                      //
     }
 
     public void addMultipleCargo(String l, String w, String h, String weight, String amount) {
