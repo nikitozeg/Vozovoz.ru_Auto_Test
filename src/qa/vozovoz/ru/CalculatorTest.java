@@ -40,7 +40,7 @@ public class CalculatorTest {
                     break;
                 }
                 try {
-                    if ("Мои данные".equals(selenium.getText("link=Мои данные"))) { selenium.click("link=Оформление заказа"); setContacts();  break;}
+                    if ("Мои данные".equals(selenium.getText("link=Мои данные"))) { selenium.click("link=Оформление заказа"); Thread.sleep(4000); setContacts();  break;}
                 } catch (Exception e) {
                 }
                 Thread.sleep(1000);
@@ -49,6 +49,7 @@ public class CalculatorTest {
     }
 
     public void waitLoad() throws InterruptedException {
+        selenium.click("xpath=(//*[@test-id='order.calc'])"); //new
         for (int second = 0; ; second++) {
             if (second >= 10) {
                 selenium.captureEntirePageScreenshot("C:\\errorlog\\Не прогрузилось слово Перевозка " + System.currentTimeMillis() + ".png", "");
@@ -134,9 +135,9 @@ public class CalculatorTest {
 
     public void setContacts() throws InterruptedException {
         selenium.type("name=shipperFizFIO", "иванов никита");
-        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-side-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
         selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
-        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-side-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
 
     }
 
@@ -261,16 +262,18 @@ public class CalculatorTest {
 
          try{   selenium.open("/");
           //  getOrderNumber();
-             Thread.sleep(2000);
+
             selenium.click("link=Оформление заказа");
-             Thread.sleep(3000);
+              Thread.sleep(2000);
             //Ожидание загрузки страницы расчета (ждем появления строки ПЕРЕВОЗКА)
-           // waitLoad(); new
-            // Thread.sleep(2000);
+            waitLoad();
+
+
             // VAR 9 (1-9)
-            setContacts();
+
 
             assertSetCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
+             setContacts();
             // PARAM2
             assertSetCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
             // PARAM4
