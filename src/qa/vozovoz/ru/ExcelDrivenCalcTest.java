@@ -29,7 +29,7 @@ public class ExcelDrivenCalcTest {
 
         for (int second = 0; ; second++) {
             if (second >= 10) {
-                selenium.captureEntirePageScreenshot("C:\\errorlog\\login FAIL " + System.currentTimeMillis() + ".png", "");
+                selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\login FAIL " + System.currentTimeMillis() + ".png", "");
                 break;
             }
             try {
@@ -48,22 +48,27 @@ public class ExcelDrivenCalcTest {
         selenium.click("css=button.btn.btn-default");
         for (int second = 0; ; second++) {
             if (second >= 10) {
-                selenium.captureEntirePageScreenshot("C:\\errorlog\\Мои Данные find is FAIL " + System.currentTimeMillis() + ".png", "");
+                selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Мои Данные find is FAIL " + System.currentTimeMillis() + ".png", "");
                 break;
             }
             try {
-                if ("Мои данные".equals(selenium.getText("link=Мои данные"))) { selenium.click("link=Оформление заказа"); setContacts();  break;}
+                if ("Мои данные".equals(selenium.getText("link=Мои данные"))) { selenium.open("/");Thread.sleep(2000); break;}
             } catch (Exception e) {
             }
             Thread.sleep(1000);
         }
-        selenium.click("css=div.header-logo.header-logo_img");
+
     }
 
     public void waitLoad() throws InterruptedException {
+       // Thread.sleep(4000);
+        //selenium.click("xpath=(//*[@test-id='order.calc'])"); //new
+      //  Thread.sleep(1000);
         for (int second = 0; ; second++) {
             if (second >= 10) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Не прогрузилось слово Перевозка " + System.currentTimeMillis() + ".png", "");
+                selenium.click("xpath=(//*[@test-id='order.calc'])");
+                Thread.sleep(1000);
+                selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Не прогрузилось слово Перевозка " + System.currentTimeMillis() + ".png", "");
                 //fail("timeout");
                 break;
             }
@@ -72,9 +77,8 @@ public class ExcelDrivenCalcTest {
                     break;
             } catch (Exception e) {
             }
-              Thread.sleep(1000);
-        }
-    }
+            Thread.sleep(1000);
+        }}
 
     public void addFloors() {
         selenium.click("xpath=(//*[@test-id='from.work.show'])");
@@ -85,62 +89,24 @@ public class ExcelDrivenCalcTest {
         selenium.type("xpath=(//input[@type='number'])[2]", "3");
     }
 
-    public void assertSetCheckOut(String l, String w, String h, String weight, String amount, int cost) throws InterruptedException {
-        try {
-            selenium.type("xpath=(//*[@test-id='unit.length'])[1]", l);
-            selenium.type("xpath=(//*[@test-id='unit.width'])[1]", w);
-            selenium.type("xpath=(//*[@test-id='unit.height'])[1]", h);
-            selenium.type("xpath=(//*[@test-id='unit.amount'])[1]", amount);
-            selenium.type("xpath=(//*[@test-id='unit.weight'])[1]", weight);
-            Thread.sleep(500); //Задержка
-            selenium.click("xpath=(//*[@test-id='order.calc'])");
-            Thread.sleep(500);
-        } catch (SeleniumException e) {
-            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\unit filling is fail " + cost + " " + System.currentTimeMillis() + ".png", "");
-        }
-
-        for (int second = 0; ; second++) {
-            if (second >= 4) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + " " + System.currentTimeMillis() + ".png", "");
-                break;
-            }
-            try {
-                if (cost == Integer.parseInt(selenium.getText("xpath=(//*[@test-id='order.cost'])"))) {
-                    checkOut();
-                    break;
-                }
-            } catch (SeleniumException e) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\Правильная цена " + cost + " " + System.currentTimeMillis() + ".png", "");
-            }
-            Thread.sleep(1000);
-        }
-
-    }
-
     public void checkOut() throws InterruptedException {
         try {selenium.click("link=Личный кабинет");
             login();
         }
-
         catch(SeleniumException e) {}
-
-        setContacts();
-
         // ОФОРМЛЕНИЕ
         try {
             selenium.click("xpath=(//*[@test-id='order.create'])");
         } catch (SeleniumException e) {
-            selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\click on orderCreate is fail " + " " + System.currentTimeMillis() + ".png", "");
+            selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\click on orderCreate is fail " + " "+ System.currentTimeMillis() + ".png", "");
 
         } finally {
-            Thread.sleep(3000);
-            try {
-                selenium.click("css=div.header-logo.header-logo_img");
-
+            Thread.sleep(5000);
+            try{   selenium.click("css=div.header-logo.header-logo_img");
                 Thread.sleep(2000);
-
-            } catch (SeleniumException e) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\click on VOZOVOZ is fail " + " " + System.currentTimeMillis() + ".png", "");
+            }
+            catch (SeleniumException e) {
+                selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\click on orderBACKWARD is fail " + " "+ System.currentTimeMillis() + ".png", "");
 
             }
         }
@@ -148,10 +114,10 @@ public class ExcelDrivenCalcTest {
 
     public void setContacts() throws InterruptedException {
         selenium.type("name=shipperFizFIO", "иванов никита");
-        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-side-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
         selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
-        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
-
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-side-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
+        //
     }
 
     public void addMultipleCargo(String l, String w, String h, String weight, String amount) {
@@ -165,48 +131,30 @@ public class ExcelDrivenCalcTest {
         selenium.click("xpath=(//*[@test-id='order.calc'])");
     }
 
-    public void chooseAllPackage() {
-        selenium.click("xpath=(//*[@test-id='packages.add'])");
-        selenium.click("xpath=(//*[@test-id='packages.bag1'])");
-        selenium.click("xpath=(//*[@test-id='packages.bag2'])");
-        selenium.click("xpath=(//*[@test-id='packages.sealPackage'])");
-        selenium.click("xpath=(//*[@test-id='packages.safePackage'])");
-        selenium.click("xpath=(//*[@test-id='packages.box1'])");//40*20*20
-        selenium.click("xpath=(//*[@test-id='packages.box2'])");
-        selenium.click("xpath=(//*[@test-id='packages.box3'])");
-        selenium.click("xpath=(//*[@test-id='packages.box4'])");
-        selenium.click("xpath=(//*[@test-id='packages.hardPackage'])");
-        selenium.click("xpath=(//*[@test-id='packages.extraPackage'])");
-        selenium.click("xpath=(//*[@test-id='packages.bubbleFilm'])");
-    }
-
     public void assertCheckout(int cost) throws InterruptedException {
-        Thread.sleep(500);
+       // Thread.sleep(500);
         selenium.click("xpath=(//*[@test-id='order.calc'])");
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         for (int second = 0; ; second++) {
-            if (second >= 5) {
+            if (second >= 6) {
+                selenium.click("xpath=(//*[@test-id='order.calc'])");
                 Thread.sleep(1000);
-                selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Правильная цена " + cost + " " + System.currentTimeMillis() + ".png", "");
+                selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Правильная цена " + cost + " "+ System.currentTimeMillis() + ".png", "");
                 break;
             }
             try {
                 if (cost == Integer.parseInt(selenium.getText("xpath=(//*[@test-id='order.cost'])"))) {
+                    setContacts();
                     checkOut();
                     break;
                 }
                 else selenium.click("xpath=(//*[@test-id='order.calc'])");
-            } catch (SeleniumException e) {
-                selenium.captureEntirePageScreenshot("Y:\\Отдел IT\\Тестирование\\Лог ошибок ежечасного тестирования калькулятора\\not found order.calc произошло в  " + System.currentTimeMillis() + ".png", "");
+            } catch (Exception e) {
+                selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\not found order.calc произошло в  "+System.currentTimeMillis()+".png", "");
                 System.out.print(e.toString());
             }
-            catch (NumberFormatException e) {
-                selenium.captureEntirePageScreenshot("C:\\errorlog\\Три точки в цене " + System.currentTimeMillis() + ".png", "");
-            }
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         }
-        selenium.click("css=div.header-logo.header-logo_img");
-        Thread.sleep(1000);
     }
 
     public void setCities(String sender, String receiver) throws InterruptedException {
@@ -290,12 +238,87 @@ public class ExcelDrivenCalcTest {
                 System.out.println(cost);
 
                 setCities(from, to);
-            selenium.click("xpath=(//*[@test-id='unit.remove'])");
-            selenium.click("xpath=(//*[@test-id='correspondence.add'])");
-            selenium.click("xpath=(//*[@test-id='to.use.address'])");
-            selenium.click("xpath=(//*[@test-id='from.use.address'])");
+
+
+            cell = sheet.getCell(0, row);
+            System.out.println("NUMBER 0 IS------"+cell.getContents().toString());
+
+            if (!(cell.getContents().toString().equals("1"))) {
+                System.out.println("NUMBER 0 ne raven 1"+cell.getContents().toString());
+                selenium.click("xpath=(//*[@test-id='unit.remove'])");
+                selenium.click("xpath=(//*[@test-id='correspondence.add'])");
+            }
+            for (int cc=3; cc<25;cc++) {
+
+                cell = sheet.getCell(cc, row);
+                if (!(cell.getContents() == "")) {
+                    System.out.println("finded= "+cell.getContents().toString().replaceAll(",", "."));
+                    switch (cc){
+
+                        case 3: selenium.click("xpath=(//*[@test-id='from.use.address'])"); System.out.println("click on FROM USE ADDRESS"); Thread.sleep(2000); break;
+                        case 4: selenium.click("xpath=(//*[@test-id='to.use.address'])"); break;
+                        case 5: selenium.type("xpath=(//*[@test-id='unit.length'])[1]", cell.getContents().toString().replaceAll(",", ".")); break;
+                        case 6: selenium.type("xpath=(//*[@test-id='unit.width'])[1]",  cell.getContents().toString().replaceAll(",", ".")); break;
+                        case 7: selenium.type("xpath=(//*[@test-id='unit.height'])[1]", cell.getContents().toString().replaceAll(",", ".")); break;
+                        case 8: selenium.type("xpath=(//*[@test-id='unit.weight'])[1]", cell.getContents().toString().replaceAll(",", ".")); break;
+                        case 9: selenium.type("xpath=(//*[@test-id='unit.amount'])[1]", cell.getContents().toString().replaceAll(",", ".")); break;
+
+                        case 12:selenium.click("xpath=(//*[@test-id='packages.add'])");
+                                  selenium.click("xpath=(//*[@test-id='packages.extraPackage'])");
+                                    break;
+                        case 13:
+                            selenium.click("xpath=(//*[@test-id='packages.bubbleFilm'])");
+                            break;
+                        case 14:
+                            selenium.click("xpath=(//*[@test-id='packages.hardPackage'])");
+                            break;
+                        case 15:
+                            selenium.click("xpath=(//*[@test-id='packages.box1'])");
+                            break;
+                        case 16:
+                            selenium.click("xpath=(//*[@test-id='packages.box2'])");
+                            break;
+                        case 17:
+                            selenium.click("xpath=(//*[@test-id='packages.box3'])");
+                            break;
+                        case 18:
+                            selenium.click("xpath=(//*[@test-id='packages.box4'])");
+                            break;
+                        case 19:
+                            selenium.click("xpath=(//*[@test-id='packages.bag1'])");
+                            break;
+                        case 20:
+                            selenium.click("xpath=(//*[@test-id='packages.bag2'])");
+                            break;
+                        case 21:
+                            selenium.click("xpath=(//*[@test-id='packages.safePackage'])");
+                            break;
+                        case 22:
+                            selenium.click("xpath=(//*[@test-id='packages.sealPackage'])");
+                            break;
+                        case 23:
+                            selenium.click("xpath=(//*[@test-id='from.work.show'])");
+                            selenium.click("//input[@type='checkbox']");
+                            selenium.type("//input[@type='number']", "3");
+                            break;
+                        case 24:
+                            selenium.click("xpath=(//*[@test-id='to.work.show'])");
+                            selenium.click("xpath=(//input[@type='checkbox'])[3]");
+                            selenium.type("xpath=(//input[@type='number'])[2]", "3");
+                            break;
+
+                    }
+
+                }
+
+
+
+            }
+
+
+
             Thread.sleep(2000);
-            selenium.click("xpath=(//*[@test-id='order.calc'])");
+           // selenium.click("xpath=(//*[@test-id='order.calc'])");
 
                     /*CellType type = cell.getType();
 
@@ -332,19 +355,15 @@ public class ExcelDrivenCalcTest {
         // getOrderNumber();
         selenium.open("/");
 
-        try {selenium.click("link=Личный кабинет");
+       try {selenium.click("link=Личный кабинет");
             login();
         }
 
         catch(SeleniumException e) {}
 
         while (true) {
-
             try {
-
-                //selenium.click("link=Оформление заказа");
-                //waitLoad();
-                //setContacts();
+                Thread.sleep(1000);
 //                // VAR 9 (1-9)
 //                assertSetCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
 //                // PARAM2
@@ -363,10 +382,53 @@ public class ExcelDrivenCalcTest {
 //                assertSetCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
 //                // PARAM8
 //                assertSetCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
-
-                for (int i=4; i<76; i++){
-                    assertCheckout(getCitiesGetCost(i));
+                //Вариант 0 - Корреспонденция
+                for (int i=6; i<76; i++){ //4
+                    try{assertCheckout(getCitiesGetCost(i));}
+                    catch(SeleniumException e) {
+                        selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Assert fail row  " + i + " " +System.currentTimeMillis() + ".png", "");
+                        selenium.click("css=div.header-logo.header-logo_img");
+                    }
                 }
+
+                //Вариант 0* - Корреспонденция от терминала к терминалу
+                for ( int i=82; i<152; i++){ //80
+                    try{assertCheckout(getCitiesGetCost(i));}
+                    catch(SeleniumException e) {
+                        selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Assert fail row  " + i + " " + System.currentTimeMillis() + ".png", "");
+                        selenium.click("css=div.header-logo.header-logo_img");
+                    }
+                }
+
+               // selenium.click("xpath=(//*[@test-id='unit.remove'])");
+                //Вариант 1 - Фиксированная с льготными ПРР
+                for ( int i=157; i<227; i++){ //80
+                    try{assertCheckout(getCitiesGetCost(i));}
+                    catch(SeleniumException e) {
+                        selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Assert fail row  " + i + " " +System.currentTimeMillis() + ".png", "");
+                        selenium.click("css=div.header-logo.header-logo_img");
+                    }
+                }
+
+                //Вариант 1 - Фикс с Полным ПРР
+                for ( int i=232; i<302; i++){ //80
+                    try{assertCheckout(getCitiesGetCost(i));}
+                    catch(SeleniumException e) {
+                        selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Assert fail row  " + i + " " +System.currentTimeMillis() + ".png", "");
+                        selenium.click("css=div.header-logo.header-logo_img");
+                    }
+                }
+
+                //Вариант 2 - Минимум (Объемный)
+                for ( int i=307; i<377; i++){ //80
+                    try{assertCheckout(getCitiesGetCost(i));}
+                    catch(SeleniumException e) {
+                        selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\Assert fail row  " + i + " " +System.currentTimeMillis() + ".png", "");
+                        selenium.click("css=div.header-logo.header-logo_img");
+                    }
+                }
+
+
 
 
              /*   //CHECK 0.1*0.1*0.1

@@ -7,6 +7,7 @@ import org.junit.runner.JUnitCore;
  */
 public class QAssurance {
     public static void main(String[] args) throws Exception {
+
         JUnitCore.main("qa.vozovoz.ru.CalculatorTest");
     }
 }

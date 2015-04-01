@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="CalculatorTesting:jar">
+  <artifact type="jar" name="CalculatorTesting:jar">
     <output-path>$USER_HOME$/Desktop/SeleniumSuite/FINAL_javas</output-path>
     <root id="archive" name="CalculatorTesting_jar.jar">
       <element id="extracted-dir" path="$USER_HOME$/Desktop/SeleniumSuite/selenium-server-standalone-2.44.0.jar" path-in-jar="/" />

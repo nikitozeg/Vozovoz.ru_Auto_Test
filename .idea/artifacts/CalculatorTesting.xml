@@ -1,12 +1,11 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="CalculatorTesting">
+  <artifact type="jar" name="CalculatorTesting">
     <output-path>$USER_HOME$/Desktop/SeleniumSuite/FINAL_javas</output-path>
     <root id="archive" name="CalculatorTesting_jar.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
       </element>
       <element id="extracted-dir" path="$USER_HOME$/selenium-java-2.44.0/selenium-2.44.0/selenium-java-2.44.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/selenium-server-standalone-2.44.0.jar" path-in-jar="/" />
       <element id="module-output" name="var9SpbMsk" />
     </root>
   </artifact>

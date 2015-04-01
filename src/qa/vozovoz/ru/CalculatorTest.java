@@ -15,42 +15,47 @@ public class CalculatorTest {
 
     public void login() throws InterruptedException {
 
-            for (int second = 0; ; second++) {
-                if (second >= 10) {
-                    selenium.captureEntirePageScreenshot("C:\\errorlog\\login FAIL " + System.currentTimeMillis() + ".png", "");
-                    break;
-                }
-                try {
-                    if (Pattern.compile("Войти").matcher(selenium.getText("css=button.btn.btn-default")).find()) break;
-                } catch (Exception e) {
-                }
-                Thread.sleep(1000);
+        for (int second = 0; ; second++) {
+            if (second >= 10) {
+                selenium.captureEntirePageScreenshot("C:\\errorlog\\login FAIL " + System.currentTimeMillis() + ".png", "");
+                break;
             }
-
-            selenium.click("name=login");
-            selenium.type("name=login", "9910012655");
-
-            selenium.click("name=password");
-            selenium.type("name=password", "72621010a");
-
-            selenium.click("css=button.btn.btn-default");
-            for (int second = 0; ; second++) {
-                if (second >= 10) {
-                    selenium.captureEntirePageScreenshot("C:\\errorlog\\Мои Данные find is FAIL " + System.currentTimeMillis() + ".png", "");
-                    break;
-                }
-                try {
-                    if ("Мои данные".equals(selenium.getText("link=Мои данные"))) { selenium.click("link=Оформление заказа"); setContacts();  break;}
-                } catch (Exception e) {
-                }
-                Thread.sleep(1000);
+            try {
+                if (Pattern.compile("Войти").matcher(selenium.getText("css=button.btn.btn-default")).find()) break;
+            } catch (Exception e) {
             }
+            Thread.sleep(1000);
+        }
+
+        selenium.click("name=login");
+        selenium.type("name=login", "9910012655");
+
+        selenium.click("name=password");
+        selenium.type("name=password", "72621010a");
+
+        selenium.click("css=button.btn.btn-default");
+        for (int second = 0; ; second++) {
+            if (second >= 10) {
+                selenium.captureEntirePageScreenshot("C:\\errorlog\\Мои Данные find is FAIL " + System.currentTimeMillis() + ".png", "");
+                break;
+            }
+            try {
+                if ("Мои данные".equals(selenium.getText("link=Мои данные"))) { selenium.click("link=Оформление заказа"); Thread.sleep(4000); setContacts();  break;}
+            } catch (Exception e) {
+            }
+            Thread.sleep(1000);
+        }
 
     }
 
     public void waitLoad() throws InterruptedException {
+        Thread.sleep(3000);
+        selenium.click("xpath=(//*[@test-id='order.calc'])"); //new
+        Thread.sleep(1000);
         for (int second = 0; ; second++) {
             if (second >= 10) {
+                selenium.click("xpath=(//*[@test-id='order.calc'])");
+                Thread.sleep(1000);
                 selenium.captureEntirePageScreenshot("C:\\errorlog\\Не прогрузилось слово Перевозка " + System.currentTimeMillis() + ".png", "");
                 //fail("timeout");
                 break;
@@ -64,12 +69,20 @@ public class CalculatorTest {
         }}
 
     public void addFloors() {
-        selenium.click("xpath=(//*[@test-id='from.work.show'])");
+
+        selenium.click("//div[@id='main']/ng-form/div/div/app-calculator/div/div/div/div/div/div/app-calculator-side-from/app-calculator-side-loading-work/div/ng-form/div/div/div/div/label");
+        selenium.click("//input[@type='checkbox']");
+        selenium.type("//input[@type='number']", "3");
+        selenium.click("//div[@id='main']/ng-form/div/div/app-calculator/div/div/div/div/div/div[2]/app-calculator-side-to/app-calculator-side-loading-work/div/ng-form/div/div/div/div/label");
+        selenium.click("xpath=(//input[@type='checkbox'])[3]");
+        selenium.type("xpath=(//input[@type='number'])[2]", "3");
+
+    /*    selenium.click("xpath=(//*[@test-id='from.work.show'])");
         selenium.click("//input[@type='checkbox']");
         selenium.type("//input[@type='number']", "3");
         selenium.click("xpath=(//*[@test-id='to.work.show'])");
         selenium.click("xpath=(//input[@type='checkbox'])[3]");
-        selenium.type("xpath=(//input[@type='number'])[2]", "3");
+        selenium.type("xpath=(//input[@type='number'])[2]", "3");    */ //new
     }
 
     public void assertSetCheckOut(String l, String w, String h, String weight, String amount, int cost) throws InterruptedException {
@@ -81,7 +94,7 @@ public class CalculatorTest {
             selenium.type("xpath=(//*[@test-id='unit.weight'])[1]", weight);
             Thread.sleep(500); //Задержка
             selenium.click("xpath=(//*[@test-id='order.calc'])");
-            Thread.sleep(500);
+            Thread.sleep(2000);
         } catch (SeleniumException e) {
             selenium.captureEntirePageScreenshot("C:\\errorlog\\unit filling is fail " + cost  + " "+ System.currentTimeMillis() + ".png", "");
         }
@@ -102,16 +115,16 @@ public class CalculatorTest {
             catch (NumberFormatException e) {
                 selenium.captureEntirePageScreenshot("C:\\errorlog\\Три точки в цене "+ System.currentTimeMillis() + ".png", "");
             }
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         }
 
     }
 
     public void checkOut() throws InterruptedException {
-         try {selenium.click("link=Личный кабинет");
-             login();
-         }
-            catch(SeleniumException e) {}
+        try {selenium.click("link=Личный кабинет");
+            login();
+        }
+        catch(SeleniumException e) {}
         // ОФОРМЛЕНИЕ
         try {
             selenium.click("xpath=(//*[@test-id='order.create'])");
@@ -119,12 +132,10 @@ public class CalculatorTest {
             selenium.captureEntirePageScreenshot("C:\\errorlog\\click on orderCreate is fail " + " "+ System.currentTimeMillis() + ".png", "");
 
         } finally {
-            Thread.sleep(40000);
-         try{   selenium.click("xpath=(//*[@test-id='order.backward'])");
-
-             Thread.sleep(2000);
-
-         }
+            Thread.sleep(45000);
+            try{   selenium.click("xpath=(//*[@test-id='order.backward'])");
+                Thread.sleep(2000);
+            }
             catch (SeleniumException e) {
                 selenium.captureEntirePageScreenshot("C:\\errorlog\\click on orderBACKWARD is fail " + " "+ System.currentTimeMillis() + ".png", "");
 
@@ -134,10 +145,10 @@ public class CalculatorTest {
 
     public void setContacts() throws InterruptedException {
         selenium.type("name=shipperFizFIO", "иванов никита");
-        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-side-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizFIO\"]", "иванов андрей");
         selenium.type("name=shipperFizTel", "+7 (951) 685-32-60");
-        selenium.type("css=div.col-xs-6.consignee > app-calculator-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
-
+        selenium.type("css=div.col-xs-6.consignee > app-calculator-side-profile.ng-isolate-scope > div.calculator-profile > div.fzFields.ng-scope > div.form-group > input[name=\"shipperFizTel\"]", "+7 (991) 001-26-55");
+        //
     }
 
     public void addMultipleCargo(String l, String w, String h, String weight, String amount) {
@@ -171,8 +182,8 @@ public class CalculatorTest {
         selenium.click("xpath=(//*[@test-id='order.calc'])");
         Thread.sleep(500);
         for (int second = 0; ; second++) {
-            if (second >= 5) {
-                Thread.sleep(1000);
+            if (second >= 4) {
+                Thread.sleep(3000);
                 selenium.captureEntirePageScreenshot("C:\\errorlog\\Правильная цена " + cost + " "+ System.currentTimeMillis() + ".png", "");
                 //fail("timeout");
                 break;
@@ -187,7 +198,7 @@ public class CalculatorTest {
                 selenium.captureEntirePageScreenshot("C:\\errorlog\\not found order.calc произошло в  "+System.currentTimeMillis()+".png", "");
                 System.out.print(e.toString());
             }
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         }
     }
 
@@ -200,51 +211,56 @@ public class CalculatorTest {
         selenium.click("xpath=(//*[@test-id='from.use.address'])");
     }
 
-  /*  public void getOrderNumber() throws InterruptedException {
-        Thread.sleep(1000);
-        selenium.click("link=Отслеживание груза");
-        selenium.type("document.formOrderStatus.elements[0]","500010397");
-        selenium.click("css=button.btn.btn-sm");
-        selenium.click("link=Дополнительная информация");
-        selenium.type("//input[@type='tel']","+7 (964) 641-06-78");
-        selenium.click("css=button.btn.btn-default");
+    /*  public void getOrderNumber() throws InterruptedException {
+          Thread.sleep(1000);
+          selenium.click("link=Отслеживание груза");
+          selenium.type("document.formOrderStatus.elements[0]","500010397");
+          selenium.click("css=button.btn.btn-sm");
+          selenium.click("link=Дополнительная информация");
+          selenium.type("//input[@type='tel']","+7 (964) 641-06-78");
+          selenium.click("css=button.btn.btn-default");
 
-        for (int second = 0; ; second++) {
-            if (second >= 60) fail("timeout");
-            try {
-                if (Pattern.compile("ООО \"В-СТАР\"").matcher(selenium.getText("css=span.selection.ng-binding")).find()) break;
-            } catch (Exception e) {
-                selenium.captureEntirePageScreenshot("C:\\errorlog\\traceCargo is fail  "+System.currentTimeMillis()+".png", "");
-            }
-            Thread.sleep(1000);
-        }
+          for (int second = 0; ; second++) {
+              if (second >= 60) fail("timeout");
+              try {
+                  if (Pattern.compile("ООО \"В-СТАР\"").matcher(selenium.getText("css=span.selection.ng-binding")).find()) break;
+              } catch (Exception e) {
+                  selenium.captureEntirePageScreenshot("C:\\errorlog\\traceCargo is fail  "+System.currentTimeMillis()+".png", "");
+              }
+              Thread.sleep(1000);
+          }
 
-        // копируем номер заказа
-        String zzzz = selenium.getText("css=span.selection.ng-binding");
-        // вставить номер заказа
-        selenium.type("//div[@id='body']/div[2]/app-find-order/section/div/div/div/form/div/div/input", zzzz);
-        selenium.click("css=div.col-md-4 > button.btn");
-        for (int second = 0; ; second++) {
-            if (second >= 60) fail("timeout");
-            try {
-                if (Pattern.compile("[0]").matcher(selenium.getText("css=h3.ng-binding")).find()) break;
-            } catch (Exception e) {
-            }
-            Thread.sleep(1000);
-        }
+          // копируем номер заказа
+          String zzzz = selenium.getText("css=span.selection.ng-binding");
+          // вставить номер заказа
+          selenium.type("//div[@id='body']/div[2]/app-find-order/section/div/div/div/form/div/div/input", zzzz);
+          selenium.click("css=div.col-md-4 > button.btn");
+          for (int second = 0; ; second++) {
+              if (second >= 60) fail("timeout");
+              try {
+                  if (Pattern.compile("[0]").matcher(selenium.getText("css=h3.ng-binding")).find()) break;
+              } catch (Exception e) {
+              }
+              Thread.sleep(1000);
+          }
 
-        // Проверка ОТСЛЕЖИВАНИЯ
+          // Проверка ОТСЛЕЖИВАНИЯ
 
-        Assert.assertTrue(selenium.isElementPresent("css=h4.list-group-item-heading"));
-        String summa = selenium.getText("css=p.list-group-item-text.ng-binding");
-        Assert.assertTrue(selenium.isElementPresent("//div[@id='body']/div[2]/app-find-order/section[2]/div/div[2]/div[2]/h4"));
-        Assert.assertTrue(selenium.isElementPresent("//div[@id='body']/div[2]/app-find-order/section[2]/div/div[2]/div[3]/h4"));
+          Assert.assertTrue(selenium.isElementPresent("css=h4.list-group-item-heading"));
+          String summa = selenium.getText("css=p.list-group-item-text.ng-binding");
+          Assert.assertTrue(selenium.isElementPresent("//div[@id='body']/div[2]/app-find-order/section[2]/div/div[2]/div[2]/h4"));
+          Assert.assertTrue(selenium.isElementPresent("//div[@id='body']/div[2]/app-find-order/section[2]/div/div[2]/div[3]/h4"));
 
-    }
-*/
+      }
+  */
     private Selenium selenium;
 
-
+    public void browserReload() throws Exception {
+        selenium.close();
+        selenium.stop();
+        Thread.sleep(5000);
+        setUp();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -254,97 +270,110 @@ public class CalculatorTest {
 
     @Test
     public void testVar9SpbMsk() throws Exception {
-       // getOrderNumber();
-
+        // getOrderNumber();
+        int counterr=0;
 
         while (true) {
+            counterr++;
+            System.out.println(counterr);
+            if (counterr==20) {counterr=0; browserReload(); System.out.println("reopen, counter= " + counterr); }
 
-         try{   selenium.open("/");
-          //  getOrderNumber();
-             Thread.sleep(2000);
-            selenium.click("link=Оформление заказа");
-             Thread.sleep(3000);
-            //Ожидание загрузки страницы расчета (ждем появления строки ПЕРЕВОЗКА)
-           // waitLoad(); new
-            // Thread.sleep(2000);
-            // VAR 9 (1-9)
-            setContacts();
+            try{   selenium.open("/");
 
-            assertSetCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
-            // PARAM2
-            assertSetCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
-            // PARAM4
-            assertSetCheckOut("0.8", "0.4", "0.4", "5", "1", 940);
-            // PARAM3
-            assertSetCheckOut("0.8", "0.4", "0.4", "4.9", "1", 800);
-            // PARAM5
-            assertSetCheckOut("0.8", "0.4", "0.4", "9.9", "1", 940);
-            // PARAM6
-            assertSetCheckOut("0.8", "0.4", "0.4", "10", "1", 950);
-            // PARAM8
-            assertSetCheckOut("0.8", "0.4", "0.4", "20", "1", 960);
-            // PARAM7
-            assertSetCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
-            // PARAM8
-            assertSetCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
-
-            //CHECK 0.1*0.1*0.1
-            assertSetCheckOut("0.1", "0.1", "0.1", "1", "1", 690);
-
-            // VAR 0(correspond check)
-            selenium.click("xpath=(//*[@test-id='unit.remove'])");
-            selenium.click("xpath=(//*[@test-id='correspondence.add'])");
-            selenium.click("xpath=(//*[@test-id='order.calc'])");
-            Thread.sleep(1000);
-            assertCheckout(550);
-
-            //VAR 1(1)
-            selenium.click("xpath=(//*[@test-id='correspondence.remove'])");
-            selenium.click("xpath=(//*[@test-id='unit.add'])");
-            addFloors();
-            chooseAllPackage();
-            assertSetCheckOut("0.8", "0.4", "0.4", "10", "1", 2640);
+                try {selenium.click("link=Личный кабинет");
+                    login();
+                }
 
 
-            //VAR 1(2)
-            setContacts();
-            assertSetCheckOut("0.8", "0.4", "0.4", "39.9", "1", 4060);
+                catch(SeleniumException e) {}
+                //  getOrderNumber();
 
-            //VAR 2
-            assertSetCheckOut("1", "0.4", "0.4", "10", "1", 4230);
-
-            //VAR 8
-            assertSetCheckOut("0.8", "0.4", "0.4", "40", "1", 5110);
-
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //CHANGE TO MSK-SPB using URL//
-            selenium.open("/calculate-the-order?calculationId=54fff5cdf2f2862e3c88419e"); //RU!
-            //       selenium.open("/calculate-the-order?calculationId=550319c5600469746778b9db"); //QA!!!
-
-            // VAR 3
-            Thread.sleep(4000);
-            selenium.click("xpath=(//*[@test-id='order.create'])");
-            setContacts();
-            selenium.click("link=Груз");
-            assertCheckout(4580);
-
-            // VAR 4
-            counter = 0;
-            selenium.click("xpath=(//*[@test-id='unit.remove'])");
-            selenium.click("xpath=(//*[@test-id='packages.remove'])");
-            selenium.click("xpath=(//*[@test-id='packages.add'])");
-            selenium.click("xpath=(//*[@test-id='packages.box4'])");
-            addMultipleCargo("5", "0.4", "0.4", "10", "2");
-            selenium.click("xpath=(//*[@test-id='unit.add'])");
-            addMultipleCargo("0.7", "0.6", "0.5", "10", "1");
-            selenium.click("xpath=(//*[@test-id='correspondence.add'])");
-            selenium.click("xpath=(//*[@test-id='order.cost'])");
-            addFloors();
-            assertCheckout(10920);
+                selenium.click("link=Оформление заказа");
+                Thread.sleep(2000);
+                //Ожидание загрузки страницы расчета (ждем появления строки ПЕРЕВОЗКА)
+                waitLoad();
 
 
-            // VAR 7
-            selenium.click("xpath=(//*[@test-id='packages.add'])");
+                // VAR 9 (1-9)
+
+                setContacts();
+                assertSetCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
+
+                // PARAM2
+                assertSetCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
+                // PARAM4
+                assertSetCheckOut("0.8", "0.4", "0.4", "5", "1", 940);
+                // PARAM3
+                assertSetCheckOut("0.8", "0.4", "0.4", "4.9", "1", 800);
+                // PARAM5
+                assertSetCheckOut("0.8", "0.4", "0.4", "9.9", "1", 940);
+                // PARAM6
+                assertSetCheckOut("0.8", "0.4", "0.4", "10", "1", 950);
+                // PARAM8
+                assertSetCheckOut("0.8", "0.4", "0.4", "20", "1", 960);
+                // PARAM7
+                assertSetCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
+                // PARAM8
+                assertSetCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
+
+                //CHECK 0.1*0.1*0.1
+                assertSetCheckOut("0.1", "0.1", "0.1", "1", "1", 690);
+
+                // VAR 0(correspond check)
+                selenium.click("xpath=(//*[@test-id='unit.remove'])");
+                selenium.click("xpath=(//*[@test-id='correspondence.add'])");
+                selenium.click("xpath=(//*[@test-id='order.calc'])");
+                Thread.sleep(1000);
+                assertCheckout(550);
+
+                //VAR 1(1)
+                selenium.click("xpath=(//*[@test-id='correspondence.remove'])");
+                selenium.click("xpath=(//*[@test-id='unit.add'])");
+
+                addFloors();
+                chooseAllPackage();
+                assertSetCheckOut("0.8", "0.4", "0.4", "10", "1", 2640);
+
+
+                //VAR 1(2)
+                setContacts();
+                assertSetCheckOut("0.8", "0.4", "0.4", "39.9", "1", 4060);
+
+                //VAR 2
+                assertSetCheckOut("1", "0.4", "0.4", "10", "1", 4230);
+
+                //VAR 8
+                assertSetCheckOut("0.8", "0.4", "0.4", "40", "1", 5110);
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //CHANGE TO MSK-SPB using URL//
+                selenium.open("/calculate-the-order?calculationId=54fff5cdf2f2862e3c88419e"); //RU!
+                //       selenium.open("/calculate-the-order?calculationId=550319c5600469746778b9db"); //QA!!!
+
+                // VAR 3
+                Thread.sleep(8000);
+                selenium.click("xpath=(//*[@test-id='order.create'])");
+                setContacts();
+                //selenium.click("link=Груз");
+                assertCheckout(4580);
+
+                // VAR 4
+                counter = 0;
+                selenium.click("xpath=(//*[@test-id='unit.remove'])");
+                selenium.click("xpath=(//*[@test-id='packages.remove'])");
+                selenium.click("xpath=(//*[@test-id='packages.add'])");
+                selenium.click("xpath=(//*[@test-id='packages.box4'])");
+                addMultipleCargo("5", "0.4", "0.4", "10", "2");
+                selenium.click("xpath=(//*[@test-id='unit.add'])");
+                addMultipleCargo("0.7", "0.6", "0.5", "10", "1");
+                selenium.click("xpath=(//*[@test-id='correspondence.add'])");
+                selenium.click("xpath=(//*[@test-id='order.cost'])");
+                addFloors();
+                assertCheckout(10920);
+
+
+                // VAR 7
+         /*   selenium.click("xpath=(//*[@test-id='packages.add'])");
             selenium.click("xpath=(//*[@test-id='packages.box4'])");
             selenium.click("xpath=(//*[@test-id='packages.hardPackage'])");
             selenium.click("xpath=(//*[@test-id='packages.extraPackage'])");
@@ -355,49 +384,53 @@ public class CalculatorTest {
             selenium.click("xpath=(//*[@test-id='unit.remove'])");
             selenium.click("xpath=(//*[@test-id='correspondence.remove'])");
             assertSetCheckOut("0.4", "0.2", "0.2", "5", "3", 1420);
+                   */ //добавить количество запросов диме!!!!!!!
+                // VAR 9 (10-18)
 
-            // VAR 9 (10-18)
-            selenium.click("xpath=(//*[@test-id='packages.remove'])");
-            assertSetCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
-            // PARAM2
-            assertSetCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
-            // PARAM4
-            assertSetCheckOut("0.8", "0.4", "0.4", "5", "1", 940);
-            // PARAM3
-            assertSetCheckOut("0.8", "0.4", "0.4", "4.9", "1", 800);
-            // PARAM5
-            assertSetCheckOut("0.8", "0.4", "0.4", "9.9", "1", 940);
-            // PARAM6
-            assertSetCheckOut("0.8", "0.4", "0.4", "10", "1", 950);
-            // PARAM8
-            assertSetCheckOut("0.8", "0.4", "0.4", "20", "1", 960);
-            // PARAM7
-            assertSetCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
-            // PARAM8
-            assertSetCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
+                selenium.open("/calculate-the-order?calculationId=5516959eb295ae835b7f964a");          //new izza var 7
+                Thread.sleep(8000);
+                setContacts();
+                // selenium.click("xpath=(//*[@test-id='packages.remove'])");
+                assertSetCheckOut("0.8", "0.4", "0.4", "2.4", "1", 690);
+                // PARAM2
+                assertSetCheckOut("0.8", "0.4", "0.4", "2.5", "1", 800);
+                // PARAM4
+                assertSetCheckOut("0.8", "0.4", "0.4", "5", "1", 940);
+                // PARAM3
+                assertSetCheckOut("0.8", "0.4", "0.4", "4.9", "1", 800);
+                // PARAM5
+                assertSetCheckOut("0.8", "0.4", "0.4", "9.9", "1", 940);
+                // PARAM6
+                assertSetCheckOut("0.8", "0.4", "0.4", "10", "1", 950);
+                // PARAM8
+                assertSetCheckOut("0.8", "0.4", "0.4", "20", "1", 960);
+                // PARAM7
+                assertSetCheckOut("0.8", "0.4", "0.4", "19.9", "1", 950);
+                // PARAM8
+                assertSetCheckOut("0.8", "0.4", "0.4", "40", "1", 960);
 
-            // VAR 6
-            selenium.open("/");
-            Thread.sleep(2000);
-            selenium.click("xpath=(//*[@test-id='minicalculator.cities.change'])");
-            selenium.click("xpath=(//*[@test-id='minicalculator.order.create'])");
-            waitLoad();
-            counter = 0;
-            addMultipleCargo("0.9", "0.4", "0.4", "35", "4");
-            selenium.click("xpath=(//*[@test-id='unit.add'])");
-            addMultipleCargo("0.7", "0.5", "0.4", "38", "3");
-            selenium.click("xpath=(//*[@test-id='packages.add'])");
-            selenium.click("xpath=(//*[@test-id='packages.hardPackage'])");
-            selenium.click("xpath=(//*[@test-id='packages.extraPackage'])");
-            selenium.click("xpath=(//*[@test-id='packages.bubbleFilm'])");
-            selenium.click("xpath=(//*[@test-id='packages.box4'])");
+                // VAR 6
+                selenium.open("/");
+                Thread.sleep(2000);
+                selenium.click("xpath=(//*[@test-id='minicalculator.cities.change'])");
+                selenium.click("xpath=(//*[@test-id='minicalculator.order.create'])");
+                waitLoad();
+                counter = 0;
+                addMultipleCargo("0.9", "0.4", "0.4", "35", "4");
+                selenium.click("xpath=(//*[@test-id='unit.add'])");
+                addMultipleCargo("0.7", "0.5", "0.4", "38", "3");
+                selenium.click("xpath=(//*[@test-id='packages.add'])");
+                selenium.click("xpath=(//*[@test-id='packages.hardPackage'])");
+                selenium.click("xpath=(//*[@test-id='packages.extraPackage'])");
+                selenium.click("xpath=(//*[@test-id='packages.bubbleFilm'])");
+                selenium.click("xpath=(//*[@test-id='packages.box4'])");
 
-            setContacts();
-            assertCheckout(2350);
-         } catch (SeleniumException e){
-             selenium.captureEntirePageScreenshot("C:\\errorlog\\FAIL OCCURED "+System.currentTimeMillis()+".png", "");
-             System.out.println(System.currentTimeMillis());
-         }
+                setContacts();
+                assertCheckout(2350);
+            } catch (SeleniumException e){
+                selenium.captureEntirePageScreenshot("C:\\errorlog\\FAIL OCCURED "+System.currentTimeMillis()+".png", "");
+                System.out.println(System.currentTimeMillis());
+            }
             try {
                 selenium.open("/");
                 Thread.sleep(3000);
