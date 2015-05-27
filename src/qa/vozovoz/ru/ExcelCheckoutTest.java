@@ -51,7 +51,7 @@ public class ExcelCheckoutTest {
 
         Thread.sleep(3000);
 
-        for (int second = 0; ; second++) {
+     /*   for (int second = 0; ; second++) {
             if (second >= 6) { selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\ loaded ORDERS notFOUND " + System.currentTimeMillis() + ".png", ""); break;}
             try {
                 if ("500010118".equals(selenium.getText("//div[@id='main']/div/div/div/div[2]/div/div/div/div/div/div/div/app-orders-orders/div/app-orders-table/div/div/div/div[2]/div/div/div/div"))) break;
@@ -59,9 +59,9 @@ public class ExcelCheckoutTest {
                 selenium.captureEntirePageScreenshot("C:\\errorlogExcel\\ORDER locator notFOUND " + System.currentTimeMillis() + ".png", ""); break;
             }
             Thread.sleep(1000);
-        }
+        }*/
         selenium.click("css=div.header-logo.header-logo_img");
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
     }
 
@@ -524,7 +524,13 @@ public class ExcelCheckoutTest {
     public void setUp() throws Exception {
         ExcelCheckoutTest test = new ExcelCheckoutTest();
         selenium = new DefaultSelenium("localhost", 4444, "*chrome", "http://vozovoz.ru/");
+      //    selenium = new DefaultSelenium("localhost", 4444, "*googlechrome" , "http://vozovoz.ru/");
+
+       // selenium = new DefaultSelenium("localhost", 4444, "*iexplore" , "http://vozovoz.ru/");
+      //  selenium.useXpathLibrary("javascript-xpath");
         selenium.start();
+       // selenium.useXpathLibrary("javascript-xpath");
+
     }
 
     @Test
@@ -541,11 +547,10 @@ public class ExcelCheckoutTest {
 
 
                 try {
-                    selenium.open("/user");
+                    selenium.open("/user/login");
                     login();
                 } catch (SeleniumException e) {
                 }
-
 
 
                 //CHECK 0.1*0.1*0.1
@@ -559,7 +564,7 @@ public class ExcelCheckoutTest {
                         browserReload();
                         Thread.sleep(3000);
                         try {
-                            selenium.open("/user");
+                            selenium.open("/user/login");
                             login();
                         } catch (SeleniumException e) {
                         }
@@ -586,7 +591,7 @@ public class ExcelCheckoutTest {
                     browserReload();
                     Thread.sleep(3000);
                     try {
-                        selenium.open("/user");
+                        selenium.open("/user/login");
                         login();
                     } catch (SeleniumException e) {
                     }
@@ -605,7 +610,7 @@ public class ExcelCheckoutTest {
                         browserReload();
                         Thread.sleep(3000);
                         try {
-                            selenium.open("/user");
+                            selenium.open("/user/login");
                             login();
                         }
 
@@ -626,7 +631,7 @@ public class ExcelCheckoutTest {
                         browserReload();
                         Thread.sleep(3000);
                         try {
-                            selenium.open("/user");
+                            selenium.open("/user/login");
                             login();
                         }
 
@@ -647,7 +652,7 @@ public class ExcelCheckoutTest {
                         browserReload();
                         Thread.sleep(3000);
                         try {
-                            selenium.open("/user");
+                            selenium.open("/user/login");
                             login();
                         }
 
@@ -668,7 +673,7 @@ public class ExcelCheckoutTest {
                         browserReload();
                         Thread.sleep(3000);
                         try {
-                            selenium.open("/user");
+                            selenium.open("/user/login");
                             login();
                         }
 
@@ -689,7 +694,7 @@ public class ExcelCheckoutTest {
                         browserReload();
                         Thread.sleep(3000);
                         try {
-                            selenium.open("/user");
+                            selenium.open("/user/login");
                             login();
                         }
 
@@ -705,7 +710,7 @@ public class ExcelCheckoutTest {
                 browserReload();
                 Thread.sleep(3000);
                 try {
-                    selenium.open("/user");
+                    selenium.open("/user/login");
                     login();
                 } catch (SeleniumException e) {
                 }
@@ -716,7 +721,7 @@ public class ExcelCheckoutTest {
                 browserReload();
                 Thread.sleep(3000);
                 try {
-                    selenium.open("/user");
+                    selenium.open("/user/login");
                     login();
                 } catch (SeleniumException e) {
                 }
@@ -727,7 +732,7 @@ public class ExcelCheckoutTest {
                 browserReload();
                 Thread.sleep(3000);
                 try {
-                    selenium.open("/user");
+                    selenium.open("/user/login");
                     login();
                 } catch (SeleniumException e) {
                 }
@@ -744,7 +749,7 @@ public class ExcelCheckoutTest {
                         browserReload();
                         Thread.sleep(3000);
                         try {
-                            selenium.open("/user");
+                            selenium.open("/user/login");
                             login();
                         } catch (SeleniumException e) {
                         }
@@ -766,7 +771,7 @@ public class ExcelCheckoutTest {
                         browserReload();
                         Thread.sleep(3000);
                         try {
-                            selenium.open("/user");
+                            selenium.open("/user/login");
                             login();
                         } catch (SeleniumException e) {
                         }
