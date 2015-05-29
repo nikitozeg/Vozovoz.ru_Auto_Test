@@ -1,8 +1,9 @@
 package qa.vozovoz.ru;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -51,25 +52,43 @@ public class requestEnergia {
         //print result
         System.out.println(response.toString());
 
-        String json = "{\"paramsArray\": [\"first\", 100], "
-                + "\"paramsObj\": {\"one\": \"two\", \"three\": \"four\"}, "
-                + "\"paramsStr\": \"some string\"}";
+        String json = "{\"p_result\":\"ok\",\"p_item\":[ {\"p_id\":132,\"p_name\":\"Николай\"},{\"p_id\":133,\"p_name\":\"Светлана\"}],\"values\":[{\"type\":\"avia\",\"price\":300,\"term\":\"1-2 аДаНаЕаЙ\"},{\"type\":\"rw\",\"price\":200,\"term\":\"5-8 аДаНаЕаЙ\"},{\"type\":\"avto\",\"price\":250,\"term\":\"5-7 аДаНаЕаЙ\"}]}";
 
+        String input = "{\"p_result\":\"ok\",\n" +
+                "\n" +
+                "\"p_item\":[\n" +
+                "\n" +
+                " {\"p_id\":132,\"p_name\":\"Николай\"}\n" +
+                "\n" +
+                ",{\"p_id\":133,\"p_name\":\"Светлана\"}\n" +
+                "\n" +
+                "               ]\n" +
+                "\n" +
+                "}";
 
-        System.out.println(json);
-        JSONParser parser = new JSONParser();
+        JsonParser parser = new JsonParser();
+        JsonObject mainObject = parser.parse(json).getAsJsonObject();
+        JsonArray pItem = mainObject.getAsJsonArray("values");
 
-        Object objj = parser.parse(json);
+        for (JsonElement user : pItem) {
+            JsonObject userObject = user.getAsJsonObject();
+            if (userObject.get("type").getAsString().equals("avto")) {
+                System.out.println(userObject.get("price"));
+                return;
+            }
+        }
+
+        /*Object objj = parser.parse(json);
         JSONObject jsonObj = (JSONObject) objj;
-        System.out.println(jsonObj.get("paramsStr"));
+        System.out.println(jsonObj.get("term"));*/
 // some string
 
-        JSONObject jo = (JSONObject) jsonObj.get("paramsObj");
+     /*   JSONObject jo = (JSONObject) jsonObj.get("paramsObj");
         System.out.println(jo.get("three"));
 // four
 
         JSONArray ja = (JSONArray) jsonObj.get("paramsArray");
-        System.out.println(ja.get(1));
+        System.out.println(ja.get(1));*/
 // 100
     }
 
