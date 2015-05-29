@@ -26,7 +26,7 @@ public class requestEnergia {
     // HTTP GET request
     private void sendGet() throws Exception {
 
-        String url = "http://api.nrg-tk.ru/api/rest/?callback=jsonp1236078926969&method=nrg.calculate&from=8362&to=495&weight=1&volume=0&place=1";
+        String url = "http://api.nrg-tk.ru/api/rest/?method=nrg.calculate&from=383&to=495&weight=1&volume=0&place=1";
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -48,11 +48,7 @@ public class requestEnergia {
         }
         in.close();
 
-
-        //print result
-        System.out.println(response.toString());
-
-        String json = "{\"p_result\":\"ok\",\"p_item\":[ {\"p_id\":132,\"p_name\":\"Николай\"},{\"p_id\":133,\"p_name\":\"Светлана\"}],\"values\":[{\"type\":\"avia\",\"price\":300,\"term\":\"1-2 аДаНаЕаЙ\"},{\"type\":\"rw\",\"price\":200,\"term\":\"5-8 аДаНаЕаЙ\"},{\"type\":\"avto\",\"price\":250,\"term\":\"5-7 аДаНаЕаЙ\"}]}";
+        String json = "{\"p_result\":\"ok\",\"p_item\":[ {\"p_id\":132,\"p_name\":\"Николай\"},{\"p_id\":133,\"p_name\":\"Светлана\"}],\"values\":[{\"type\":\"avto\",\"price\":230,\"term\":\"2-3 дня\"}]}";
 
         String input = "{\"p_result\":\"ok\",\n" +
                 "\n" +
@@ -66,8 +62,11 @@ public class requestEnergia {
                 "\n" +
                 "}";
 
-        JsonParser parser = new JsonParser();
-        JsonObject mainObject = parser.parse(json).getAsJsonObject();
+
+
+        JsonParser parser = new JsonParser();//response.toString()
+        JsonObject mainObject = parser.parse(response.toString()).getAsJsonObject().getAsJsonObject("rsp");
+        System.out.println(response.toString());
         JsonArray pItem = mainObject.getAsJsonArray("values");
 
         for (JsonElement user : pItem) {
