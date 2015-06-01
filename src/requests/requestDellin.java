@@ -137,7 +137,7 @@ public class requestDellin {
 
 
                 HttpPost request = new HttpPost("https://api.dellin.ru/v1/public/calculator.json");
-                StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",\"derivalPoint\":\"7800000000000000000000000\",\"derivalDoor\":true,\"arrivalPoint\":\"5200000100000000000000000\",\"arrivalDoor\":true,\"sizedVolume\":\"1\",\"sizedWeight\":\"1\"}");
+                StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",\"derivalPoint\":\""++\",\"derivalDoor\":true,\"arrivalPoint\":\"5200000100000000000000000\",\"arrivalDoor\":true,\"sizedVolume\":\"1\",\"sizedWeight\":\"1\"}");
                 request.addHeader("content-type", "application/javascript");
                 request.setEntity(params);
 
