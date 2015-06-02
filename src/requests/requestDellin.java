@@ -1,10 +1,12 @@
 package requests;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.thoughtworks.selenium.SeleniumException;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import org.apache.http.HttpEntity;
@@ -38,6 +40,7 @@ public class requestDellin {
 
     // HTTP GET request
     private void sendGet() throws Exception {
+        String MTcost, derival,priceFrom,fromm,priceTO="";
         File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\crowlerResult.xls");
         WritableWorkbook writableWorkbook = Workbook.createWorkbook(crowlerResult);
         w = Workbook.getWorkbook(exlFile);
@@ -109,7 +112,7 @@ public class requestDellin {
                 HttpClient httpClient = HttpClientBuilder.create().build();
 
                 HttpPost request = new HttpPost("https://api.dellin.ru/v1/public/calculator.json");
-                StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",\"derivalPoint\":\"7800000000000000000000000\",\"derivalDoor\":true,\"arrivalPoint\":\"5200000100000000000000000\",\"arrivalDoor\":true,\"sizedVolume\":\"1\",\"sizedWeight\":\"1\"}");
+                StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",\"derivalPoint\":\""+fromCode+"\",\"derivalDoor\":true,\"arrivalPoint\":\""+toCode+"\",\"arrivalDoor\":true,\"sizedVolume\":\"1\",\"sizedWeight\":\"1\"}");
                 request.addHeader("content-type", "application/javascript");
                 request.setEntity(params);
 
@@ -144,16 +147,26 @@ public class requestDellin {
                // Thread.sleep(90000);
 
                 JsonParser parser = new JsonParser();//response.toString()
+
                 JsonObject mainObject = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("intercity");
-                System.out.println("intercity= " + mainObject.getAsJsonPrimitive("price").getAsString());
+                MTcost=mainObject.getAsJsonPrimitive("price").getAsString();
+                System.out.println("intercity= "+ MTcost);
 
                 JsonObject mainObject2 = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("derival");
-                System.out.println("derival= " + mainObject2.getAsJsonPrimitive("price").getAsString());
-                System.out.println("from= " + mainObject2.getAsJsonPrimitive("terminal").getAsString());
+                priceFrom=mainObject2.getAsJsonPrimitive("price").getAsString();
+                System.out.println("priceFrom= "+ priceFrom);
+
+                fromm=mainObject2.get("terminal").getAsString();
+                System.out.println("from= "+fromm);
 
                 JsonObject mainObject3 = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("arrival");
-                System.out.println("arrival= " + mainObject3.get("price").getAsString());
-                System.out.println("to= " + mainObject3.get("terminal").getAsString());
+                derival=mainObject3.get("terminal").getAsString();
+                System.out.println("to= " + derival);
+               // String arrival=mainObject3.get("price").getAsString();
+                priceTO=mainObject3.get("price").getAsString();
+                System.out.println("priceTO= " + priceTO);
+
+
 
                 try {
                    // for (JsonElement user : pItem) {
@@ -161,20 +174,20 @@ public class requestDellin {
                         //if (userObject.get("type").getAsString().equals("avto")) {
                        //        System.out.print(userObject.get("price"));
 
-                      /*      s = String.valueOf(userObject.get("price"));
+                           // s = String.valueOf(userObject.get("price"));
                             Label label5 = new Label(3, i, s);
-                            Label from1 = new Label(0, i, from);
+                      //      Label from1 = new Label(0, i, fromm);
                             Label to1 = new Label(1, i, to);
+
                             Label ves = new Label(2, i, weight.toString());
                             writableSheet.addCell(label5);
-                            writableSheet.addCell(from1);
+                          //  writableSheet.addCell(from1);
                             writableSheet.addCell(to1);
                             writableSheet.addCell(ves);
                             System.out.println(i);
                             //return;
-                        }*/
-                 //   }
-                } catch (Exception e) {
+                        }
+                 catch (Exception e) {
                 }
             }
         }catch (Exception e){}
