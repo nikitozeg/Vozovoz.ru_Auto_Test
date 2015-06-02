@@ -1,4 +1,4 @@
-package qa.vozovoz.ru;
+package requests;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -49,8 +49,8 @@ Double weight;
         String s = "null";
         String to = "", from = "";
         WritableSheet writableSheet = writableWorkbook.createSheet("Sheet2", 0);
-        Double volume = 0.13;
-        for (int i = 1; i < 1680; i++) {
+
+        for (int i = 1; i <2; i++) {
             try {
 
 
@@ -101,7 +101,7 @@ Double weight;
                 //Thread.sleep(1000);
 
                 cell = sheet.getCell(8, i); //ves
-            //    System.out.println("is= " + cell.getContents().toString().replaceAll(",", "."));
+                //    System.out.println("is= " + cell.getContents().toString().replaceAll(",", "."));
                 weight = Double.parseDouble(cell.getContents().toString().replaceAll(",", "."));
 
             }  catch (SeleniumException e) {
@@ -143,12 +143,14 @@ Double weight;
                      //   System.out.print(userObject.get("price"));
 
                         s = String.valueOf(userObject.get("price"));
-                        Label label5 = new Label(4, i, s);
-                        Label from1 = new Label(1, i, from);
-                        Label to1 = new Label(2, i, to);
+                        Label label5 = new Label(3, i, s);
+                        Label from1 = new Label(0, i, from);
+                        Label to1 = new Label(1, i, to);
+                        Label ves = new Label(2, i, weight.toString());
                         writableSheet.addCell(label5);
                         writableSheet.addCell(from1);
                         writableSheet.addCell(to1);
+                        writableSheet.addCell(ves);
                         System.out.println(i);
                         //return;
                     }
