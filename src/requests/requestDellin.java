@@ -1,14 +1,10 @@
 package requests;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.thoughtworks.selenium.SeleniumException;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
-import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import org.apache.http.HttpEntity;
@@ -52,9 +48,8 @@ public class requestDellin {
             String to = "", from = "";
             WritableSheet writableSheet = writableWorkbook.createSheet("Sheet2", 0);
             Double volume = 0.13;
-            for (int i = 1; i < 7; i++) {
+            for (int i = 1; i < 2; i++) {
                 try {
-
 
                     Cell cell = sheet.getCell(1, i);
                     from = cell.getContents().toString();
@@ -111,33 +106,10 @@ public class requestDellin {
                 }
 
 
-//                String url = "http://api.nrg-tk.ru/api/rest/?method=nrg.calculate&from=" + fromCode + "&to=" + toCode + "&weight=" + weight + "&volume=0.13&place=1";
-//                // System.out.println(url);
-//                URL obj = new URL(url);
-//                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-//                con.setRequestMethod("GET");
-//                //add request header
-//                con.setRequestProperty("User-Agent", USER_AGENT);
-//
-//                //int responseCode = con.getResponseCode();
-//                // System.out.println("\nSending 'GET' request to URL : " + url);
-//
-//                //System.out.println("Response Code : " + responseCode);
-//
-//                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//                String inputLine;
-//                StringBuffer response = new StringBuffer();
-//
-//                while ((inputLine = in.readLine()) != null) {
-//                    response.append(inputLine);
-//                }
-//                in.close();
-
                 HttpClient httpClient = HttpClientBuilder.create().build();
 
-
                 HttpPost request = new HttpPost("https://api.dellin.ru/v1/public/calculator.json");
-                StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",\"derivalPoint\":\""++\",\"derivalDoor\":true,\"arrivalPoint\":\"5200000100000000000000000\",\"arrivalDoor\":true,\"sizedVolume\":\"1\",\"sizedWeight\":\"1\"}");
+                StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",\"derivalPoint\":\"7800000000000000000000000\",\"derivalDoor\":true,\"arrivalPoint\":\"5200000100000000000000000\",\"arrivalDoor\":true,\"sizedVolume\":\"1\",\"sizedWeight\":\"1\"}");
                 request.addHeader("content-type", "application/javascript");
                 request.setEntity(params);
 
@@ -169,20 +141,27 @@ public class requestDellin {
                 System.out.println("RESPONSE: " + ss);
                 instream.close();
 
-                Thread.sleep(90000);
+               // Thread.sleep(90000);
 
                 JsonParser parser = new JsonParser();//response.toString()
-                JsonObject mainObject = parser.parse(response.toString()).getAsJsonObject().getAsJsonObject("rsp");
-                //  System.out.println(response.toString());
-                JsonArray pItem = mainObject.getAsJsonArray("values");
+                JsonObject mainObject = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("intercity");
+                System.out.println("intercity= " + mainObject.getAsJsonPrimitive("price").getAsString());
+
+                JsonObject mainObject2 = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("derival");
+                System.out.println("derival= " + mainObject2.getAsJsonPrimitive("price").getAsString());
+                System.out.println("from= " + mainObject2.getAsJsonPrimitive("terminal").getAsString());
+
+                JsonObject mainObject3 = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("arrival");
+                System.out.println("arrival= " + mainObject3.get("price").getAsString());
+                System.out.println("to= " + mainObject3.get("terminal").getAsString());
 
                 try {
-                    for (JsonElement user : pItem) {
-                        JsonObject userObject = user.getAsJsonObject();
-                        if (userObject.get("type").getAsString().equals("avto")) {
-                            //   System.out.print(userObject.get("price"));
+                   // for (JsonElement user : pItem) {
+                     //   JsonObject userObject = user.getAsJsonObject();
+                        //if (userObject.get("type").getAsString().equals("avto")) {
+                       //        System.out.print(userObject.get("price"));
 
-                            s = String.valueOf(userObject.get("price"));
+                      /*      s = String.valueOf(userObject.get("price"));
                             Label label5 = new Label(3, i, s);
                             Label from1 = new Label(0, i, from);
                             Label to1 = new Label(1, i, to);
@@ -193,8 +172,8 @@ public class requestDellin {
                             writableSheet.addCell(ves);
                             System.out.println(i);
                             //return;
-                        }
-                    }
+                        }*/
+                 //   }
                 } catch (Exception e) {
                 }
             }
