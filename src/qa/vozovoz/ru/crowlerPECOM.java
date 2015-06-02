@@ -181,7 +181,6 @@ public class crowlerPECOM {
 
                       SetParams(i);
 
-
                        // Thread.sleep(500);
                         selenium.click("id=result");
                         Thread.sleep(1500);
