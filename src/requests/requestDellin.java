@@ -41,9 +41,9 @@ public class requestDellin {
     private void sendGet() throws Exception {
         String MTcost, derival, priceFrom, fromm, priceTO = "";
         File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\crowlerResult.xls");
-        WritableWorkbook writableWorkbook = Workbook.createWorkbook(crowlerResult);
         w = Workbook.getWorkbook(exlFile);
         Sheet sheet = w.getSheet(0);
+        WritableWorkbook writableWorkbook = Workbook.createWorkbook(crowlerResult);
         WritableSheet writableSheet = writableWorkbook.createSheet("Sheet2", 0);
         Label label00 = new Label(2, 0, "МТ");
         Label label01 = new Label(3, 0, "Забор");
@@ -60,7 +60,7 @@ public class requestDellin {
 
             String to = "", from = "";
 
-            for (int i = 1236; i < 1682; i++) {
+            for (int i = 1670; i < 1675; i++) {
                 try {
 
                     Cell cell = sheet.getCell(1, i);
