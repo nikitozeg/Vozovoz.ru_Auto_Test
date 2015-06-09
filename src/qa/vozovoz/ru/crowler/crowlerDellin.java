@@ -1,4 +1,4 @@
-package qa.vozovoz.ru;
+package qa.vozovoz.ru.crowler;
 /**
  * Created by n.ivanov on 25.03.2015.
  */
@@ -16,12 +16,13 @@ import jxl.write.WritableWorkbook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import qa.vozovoz.ru.crowler.crowlerPECOM;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-public class crowlerEnergia {
+public class crowlerDellin {
 
     int counter = 0;
     File exlFile = new File("C:\\Users\\n.ivanov\\Dropbox\\crowler.xls");
@@ -94,7 +95,7 @@ public class crowlerEnergia {
 
     }
 
-    public int SetParams(int row) throws IOException {
+    public int SetParams(int row) throws IOException, InterruptedException {
 
 
         int cost = 0;
@@ -113,15 +114,15 @@ public class crowlerEnergia {
 
             //Thread.sleep(1000);
             try {
-                selenium.type("name=town_0", from);
-                if (from.equals("Воронеж")) selenium.click("link=Воронеж");
-                if (from.equals("Новосибирск")) selenium.click("link=Новосибирск");
-                if (from.equals("Саратов")) selenium.click("link=Саратов");
-                selenium.type("name=town_1", to);
-                if (to.equals("Воронеж")) selenium.click("link=Воронеж");
-                if (to.equals("Новосибирск")) selenium.click("link=Новосибирск");
-                if (to.equals("Саратов")) selenium.click("link=Саратов");
-//                waitLoad();
+                selenium.type("id=arrival_point_cod", "мос");
+
+                Thread.sleep(3000);
+                selenium.click("css=#ui-id-1 li:first");
+
+                selenium.typeKeys("id=derival_point_cod", String.valueOf(from.charAt(0)));
+                selenium.typeKeys("id=derival_point_cod", String.valueOf(from.charAt(1)));
+                selenium.typeKeys("id=derival_point_cod", String.valueOf(from.charAt(2)));
+                selenium.click("css=#ui-id-2 li:first");
             }
             catch (SeleniumException e){
                 e.printStackTrace();
@@ -129,7 +130,7 @@ public class crowlerEnergia {
             }
 
             cell = sheet.getCell(8, row); //ves
-            selenium.type("xpath=(//input[@name=''])[5]", cell.getContents().toString().replaceAll(",", ".")); //setted ves
+            selenium.type("id=sized_weight", cell.getContents().toString().replaceAll(",", ".")); //setted ves
 
 
             //  Thread.sleep(2000);
@@ -153,14 +154,14 @@ public class crowlerEnergia {
 
     @Before
     public void setUp() throws Exception {
-        crowler test = new crowler();
-        selenium = new DefaultSelenium("localhost", 4444, "*chrome", "http://nrg-tk.ru/client/calculator.html");
+        crowlerPECOM test = new crowlerPECOM();
+        selenium = new DefaultSelenium("localhost", 4444, "chrome", "http://widgets.dellin.ru/calculator/");
         selenium.start();
     }
 
     @Test
     public void testVar9SpbMsk() throws Exception {
-        selenium.open("/");
+        selenium.open("");
         Thread.sleep(2000);
         File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\crowlerResult.xls");
         WritableWorkbook writableWorkbook = Workbook.createWorkbook(crowlerResult);
@@ -170,20 +171,16 @@ public class crowlerEnergia {
         //  Number num
         try {
             System.out.println("start");
-            selenium.type("xpath=(//input[@name=''])[1]", "0.8"); //d
-            selenium.type("xpath=(//input[@name=''])[2]", "0.4"); //sh
-            selenium.type("xpath=(//input[@name=''])[3]", "0.4"); //v
-            selenium.type("xpath=(//input[@name=''])[4]", "0.13"); //o
+            selenium.type("id=sized_volume", "0.13"); //o
 
             for ( int i=1; i<1680; i++){
                 try{
 
                     SetParams(i);
 
-
                     // Thread.sleep(500);
-                    selenium.click("id=result");
-                    Thread.sleep(1500);
+                    selenium.click("id=#example1");
+                    Thread.sleep(15000);
 
                     for (int second = 0; i<12 ; second++) {
                         if (second >= 10) {
