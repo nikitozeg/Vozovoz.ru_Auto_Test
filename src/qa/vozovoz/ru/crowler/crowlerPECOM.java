@@ -1,4 +1,4 @@
-package qa.vozovoz.ru;
+package qa.vozovoz.ru.crowler;
 /**
  * Created by n.ivanov on 25.03.2015.
  */
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class crowlerPECOM {
 
     int counter = 0;
-    File exlFile = new File("C:\\Users\\n.ivanov\\Dropbox\\crowler.xls");
+    File exlFile = new File("C:\\Users\\n.ivanov\\Dropbox\\crowler\\testData.xls");
     Workbook w;
     private Selenium selenium;
 
@@ -162,7 +162,7 @@ public class crowlerPECOM {
     public void testVar9SpbMsk() throws Exception {
         selenium.open("/ru/calc/");
         Thread.sleep(2000);
-        File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\crowlerResult.xls");
+        File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\crowler\\PECOM.xls");
         WritableWorkbook writableWorkbook = Workbook.createWorkbook(crowlerResult);
 
         WritableSheet writableSheet = writableWorkbook.createSheet("Sheet2", 0);
@@ -183,21 +183,21 @@ public class crowlerPECOM {
 
                        // Thread.sleep(500);
                         selenium.click("id=result");
-                        Thread.sleep(1500);
+                        //Thread.sleep(1500);
 
-                        for (int second = 0; i<12 ; second++) {
+                        for (int second = 0; i<10 ; second++) {
                             if (second >= 10) {
                                 selenium.captureEntirePageScreenshot("C:\\errorlogCrowler\\цена не загрузилась за 10 сек " + System.currentTimeMillis() + ".png", "");
                                 break;
                             }
                             try {
-                                selenium.isElementPresent("//div[@id='result-wrap']/div/div/div/table/tbody/tr[5]/th"); break;
+                                if(selenium.isTextPresent("ИТОГО")) break;
                             } catch (Exception e) {
                                 selenium.captureEntirePageScreenshot("C:\\errorlogCrowler\\глюк " + System.currentTimeMillis() + ".png", "");
                             }
-                           // Thread.sleep(1000);
+                            Thread.sleep(500);
                         }
-
+                       //
                         String ok=selenium.getText("//div[@id='result-wrap']/div/div/div/table/tbody/tr[2]/td[2]");
                         String zabor=selenium.getText("//div[@id='result-wrap']/div/div/div/table/tbody/tr[3]/td[3]");
                         String dostavka=selenium.getText("//div[@id='result-wrap']/div/div/div/table/tbody/tr[4]/td[3]");
