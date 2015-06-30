@@ -107,7 +107,7 @@ public class crowlerEnergia {
             int count = 0;
 
 
-            for (int i = 7115; i < 7120; i++) {//18392  //4732
+            for (int i = 1; i < 14; i++) {//18392  //4732
                 try {
                     if (count == 50) {
                         browserReload(); /*Thread.sleep(6000);*/
