@@ -18,18 +18,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 
 public class crowlerEnergia {
 
     int counter = 0;
-    File exlFile = new File("C:\\Users\\n.ivanov\\Dropbox\\crowler\\price9\\pecom\\MTprice9PEC.xls");
+    File exlFile = new File("C:\\Users\\n.ivanov\\Dropbox\\crowler\\price12NRG\\input2.xls");
     Workbook w;
     private Selenium selenium;
-    String type, weight, volume;
+    String type, weight, volume, to, from ;;
 
 
-    public int SetParams(int row) throws IOException {
+    public int SetParams(int row) throws Exception {
 
 
         int cost = 0;
@@ -62,6 +61,8 @@ public class crowlerEnergia {
             } catch (SeleniumException e) {
                 e.printStackTrace();
                 selenium.captureEntirePageScreenshot("C:\\errorlogCrowler\\Select Cities is failed" + " " + System.currentTimeMillis() + ".png", "");
+                throw new Exception();
+
             }
 
 
@@ -71,6 +72,8 @@ public class crowlerEnergia {
             selenium.captureEntirePageScreenshot("C:\\errorlogCrowler\\BiffException" + " " + System.currentTimeMillis() + ".png", "");
         } catch (SeleniumException e) {
             selenium.captureEntirePageScreenshot("C:\\errorlogCrowler\\SeleniumException on row " + row + " " + System.currentTimeMillis() + ".png", "");
+            selenium.open("/calculator.html");
+            Thread.sleep(3000);
         }
         return cost;
     }
@@ -81,6 +84,8 @@ public class crowlerEnergia {
         selenium.stop();
         // Thread.sleep(5000);
         setUp();
+        selenium.open("/calculator.html");
+        Thread.sleep(1000);
 
     }
 
@@ -95,7 +100,7 @@ public class crowlerEnergia {
     public void testVar9SpbMsk() throws Exception {
         selenium.open("/calculator.html");
         Thread.sleep(1000);
-        File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\crowlerResds.xls");
+        File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\crowler\\price12NRG\\output2.xls");
         WritableWorkbook writableWorkbook = Workbook.createWorkbook(crowlerResult);
 
         WritableSheet writableSheet = writableWorkbook.createSheet("Sheet2", 0);
@@ -118,10 +123,19 @@ public class crowlerEnergia {
                     SetParams(i);
 
                     selenium.click("css=button.btn.btn-primary");
-                    selenium.waitForPageToLoad("20000");
+                    //selenium.waitForPageToLoad("20000");
+                    for(int j=1;j<7;j++)
+                    {
+                        try {if ((selenium.getText("css=td").contains(to))&&(selenium.getText("css=td").contains(from)))
+                            break;}
+                        catch (SeleniumException e) {}
+                        Thread.sleep(1000);
+
+                        if (j==6)   throw new Exception();
+                    }
 
                     if (selenium.isTextPresent("Авиа") || selenium.isTextPresent("ЖД")) {
-                        System.out.println("avia/ghd on "+i);
+                        System.out.println("avia/ghd on " + i);
                         if (selenium.getText("//div[@id='all']/div/div[2]/aside/section/table/thead/tr/th[2]").equals("Авто")) {
                             cena = selenium.getText("//div[@id='all']/div/div[2]/aside/section/table/tbody/tr/td[2]");
                             type = selenium.getText("//div[@id='all']/div/div[2]/aside/section/table/thead/tr/th[2]");
@@ -164,7 +178,14 @@ public class crowlerEnergia {
                     writableSheet.addCell(label6);
                     writableSheet.addCell(label7);
                 } catch (SeleniumException e) {
-                    selenium.captureEntirePageScreenshot("C:\\errorlogCrowler\\чтото не нашлось  " + i + " " + System.currentTimeMillis() + ".png", "");
+                    selenium.captureEntirePageScreenshot("C:\\Users\\adm\\Dropbox\\errorlogCrowler\\чтото не нашлось  " + i + " " + System.currentTimeMillis() + ".png", "");
+                    selenium.open("/calculator.html");
+                    Thread.sleep(3000);
+                }
+                catch (Exception e){//selenium.captureEntirePageScreenshot("C:\\Users\\adm\\Dropbox\\errorlogCrowler\\Exception " + System.currentTimeMillis() + ".png", "");
+                    Label label8 = new Label(7, i, "Не возят");
+                    writableSheet.addCell(label8);
+                    browserReload();
                 }
             }
 
