@@ -19,10 +19,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.io.*;
 
 public class requestDellin {
-    File exlFile = new File("C:\\Users\\n.ivanov\\Dropbox\\crowler.xls");
+    File exlFile = new File("C:\\Users\\n.ivanov\\Dropbox\\request\\DLprice12\\input2.xls");
     Workbook w;
     String fromCode, toCode;
-    Double weight;
+    Double weight,volume;
+    int count;
     private final String USER_AGENT = "Mozilla/5.0";
   /*  public  SetParams(int row) throws IOException {
 
@@ -40,12 +41,12 @@ public class requestDellin {
 
     private void sendGet() throws Exception {
         String MTcost, derival, priceFrom, fromm, priceTO = "";
-        File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\crowlerResult.xls");
+        File crowlerResult = new File("C:\\Users\\n.ivanov\\Dropbox\\request\\DLprice12\\requestDellinVesa.xls");
         w = Workbook.getWorkbook(exlFile);
         Sheet sheet = w.getSheet(0);
         WritableWorkbook writableWorkbook = Workbook.createWorkbook(crowlerResult);
         WritableSheet writableSheet = writableWorkbook.createSheet("Sheet2", 0);
-        Label label00 = new Label(2, 0, "МТ");
+        Label label00 = new Label(2, 0, "МТ+Забор+Отвоз");
         Label label01 = new Label(3, 0, "Забор");
         Label label02 = new Label(4, 0, "Отвоз");
         Label label03 = new Label(4, 0, "Отвоз");
@@ -60,73 +61,127 @@ public class requestDellin {
 
             String to = "", from = "";
 
-            for (int i = 1670; i < 1675; i++) {
+            for (int i = 1; i < 7; i++) {//10336
                 try {
 
                     Cell cell = sheet.getCell(1, i);
-                    from = cell.getContents().toString();
+                    from = cell.getContents();
 
-                    if (from.equals("МОСКВА")) fromCode = "7700000000000000000000000";
-                    if (from.equals("Волгоград")) fromCode = "3400000100000000000000000";
-                    if (from.equals("Воронеж")) fromCode = "3600000100000000000000000";
-                    if (from.equals("Екатеринбург")) fromCode = "6600000100000000000000000";
-                    if (from.equals("Казань")) fromCode = "1600000100000000000000000";
-                    if (from.equals("Краснодар")) fromCode = "2300000100000000000000000";
-                    if (from.equals("Нижний Новгород")) fromCode = "5200000100000000000000000";
-                    if (from.equals("НОВОСИБИРСК")) fromCode = "5400000100000000000000000";
-                    if (from.equals("Омск")) fromCode = "5500000100000000000000000";
-                    if (from.equals("Ростов-на-Дону")) fromCode = "6100000100000000000000000";
-                    if (from.equals("Самара")) fromCode = "6300000100000000000000000";
-                    if (from.equals("С.Петербург")) fromCode = "7800000000000000000000000";
-                    if (from.equals("Саратов")) fromCode = "6400000100000000000000000";
-                    if (from.equals("Ставрополь")) fromCode = "2600000100000000000000000";
-                    if (from.equals("Уфа")) fromCode = "200000100000000000000000";
-                    if (from.equals("Челябинск")) fromCode = "7400000100000000000000000";
+                    if (from.equalsIgnoreCase("МОСКВА")) fromCode = "7700000000000000000000000";
+                    if (from.equalsIgnoreCase("Волгоград")) fromCode = "3400000100000000000000000";
+                    if (from.equalsIgnoreCase("Воронеж")) fromCode = "3600000100000000000000000";
+                    if (from.equalsIgnoreCase("Екатеринбург")) fromCode = "6600000100000000000000000";
+                    if (from.equalsIgnoreCase("Казань")) fromCode = "1600000100000000000000000";
+                    if (from.equalsIgnoreCase("Краснодар")) fromCode = "2300000100000000000000000";
+                    if (from.equalsIgnoreCase("Нижний Новгород")) fromCode = "5200000100000000000000000";
+                    if (from.equalsIgnoreCase("НОВОСИБИРСК")) fromCode = "5400000100000000000000000";
+                    if (from.equalsIgnoreCase("Омск")) fromCode = "5500000100000000000000000";
+                    if (from.equalsIgnoreCase("Ростов-на-Дону")) fromCode = "6100000100000000000000000";
+                    if (from.equalsIgnoreCase("Самара")) fromCode = "6300000100000000000000000";
+                    if (from.equalsIgnoreCase("Санкт-Петербург")) fromCode = "7800000000000000000000000";
+                    if (from.equalsIgnoreCase("Саратов")) fromCode = "6400000100000000000000000";
+                    if (from.equalsIgnoreCase("Ставрополь")) fromCode = "2600000100000000000000000";
+                    if (from.equalsIgnoreCase("Уфа")) fromCode = "200000100000000000000000";
+                    if (from.equalsIgnoreCase("Челябинск")) fromCode = "7400000100000000000000000";
+                    if (from.equalsIgnoreCase("Апатиты")) fromCode = "5100000200000000000000000";
+                    if (from.equalsIgnoreCase("Архангельск")) fromCode = "2900000100000000000000000";
+                    if (from.equalsIgnoreCase("Вельск")) fromCode = "2900200100000000000000000";
+                    if (from.equalsIgnoreCase("Вологда")) fromCode = "3500000100000000000000000";
+                    if (from.equalsIgnoreCase("Евпатория")) fromCode = "9100000900000000000000000";
+                    if (from.equalsIgnoreCase("Калининград")) fromCode = "3900000100000000000000000";
+                    if (from.equalsIgnoreCase("Кандалакша")) fromCode = "5100000400000000000000000";
+                    if (from.equalsIgnoreCase("Керчь")) fromCode = "9100000100000000000000000";
+                    if (from.equalsIgnoreCase("Киров")) fromCode = "4300000100000000000000000";
+                    if (from.equalsIgnoreCase("Котлас")) fromCode = "2900800100000000000000000";
+                    if (from.equalsIgnoreCase("Мончегорск")) fromCode = "5100000600000000000000000";
+                    if (from.equalsIgnoreCase("Мурманск")) fromCode = "5100000100000000000000000";
+                    if (from.equalsIgnoreCase("Набережные Челны")) fromCode = "1600000200000000000000000";
+                    if (from.equalsIgnoreCase("Пенза")) fromCode = "5800000100000000000000000";
+                    if (from.equalsIgnoreCase("Пермь")) fromCode = "5900000100000000000000000";
+                    if (from.equalsIgnoreCase("Петрозаводск")) fromCode = "1000000100000000000000000";
+                    if (from.equalsIgnoreCase("Севастополь")) fromCode = "9200000000000000000000000";
+                    if (from.equalsIgnoreCase("Симферополь")) fromCode = "9100000700000000000000000";
+                    if (from.equalsIgnoreCase("Сыктывкар")) fromCode = "1100000100000000000000000";
+                    if (from.equalsIgnoreCase("Ухта")) fromCode = "1100000800000000000000000";
+                    if (from.equalsIgnoreCase("Ялта")) fromCode = "9100000800000000000000000";
+                    if (from.equalsIgnoreCase("Череповец")) fromCode = "3500000200000000000000000";
+                    if (from.equalsIgnoreCase("Феодосия")) fromCode = "9100001000000000000000000";
 
-
-                    cell = sheet.getCell(2, i);
-                    to = cell.getContents().toString();
-
-                    if (to.equals("МОСКВА")) toCode = "7700000000000000000000000";
-                    if (to.equals("Волгоград")) toCode = "3400000100000000000000000";
-                    if (to.equals("Воронеж")) toCode = "3600000100000000000000000";
-                    if (to.equals("Екатеринбург")) toCode = "6600000100000000000000000";
-                    if (to.equals("Казань")) toCode = "1600000100000000000000000";
-                    if (to.equals("Краснодар")) toCode = "2300000100000000000000000";
-                    if (to.equals("Нижний Новгород")) toCode = "5200000100000000000000000";
-                    if (to.equals("НОВОСИБИРСК")) toCode = "5400000100000000000000000";
-                    if (to.equals("Омск")) toCode = "5500000100000000000000000";
-                    if (to.equals("Ростов-на-Дону")) toCode = "6100000100000000000000000";
-                    if (to.equals("Самара")) toCode = "6300000100000000000000000";
-                    if (to.equals("С.Петербург")) toCode = "7800000000000000000000000";
-                    if (to.equals("Саратов")) toCode = "6400000100000000000000000";
-                    if (to.equals("Ставрополь")) toCode = "2600000100000000000000000";
-                    if (to.equals("Уфа")) toCode = "200000100000000000000000";
-                    if (to.equals("Челябинск")) toCode = "7400000100000000000000000";
-
+                  //  System.out.print(from);
+                    cell = sheet.getCell(31, i);
+                    toCode = cell.getContents();
+                  //  System.out.print(toCode);
+                 /*   if (to.equalsIgnoreCase("МОСКВА")) toCode = "7700000000000000000000000";
+                    if (to.equalsIgnoreCase("Волгоград")) toCode = "3400000100000000000000000";
+                    if (to.equalsIgnoreCase("Воронеж")) toCode = "3600000100000000000000000";
+                    if (to.equalsIgnoreCase("Екатеринбург")) toCode = "6600000100000000000000000";
+                    if (to.equalsIgnoreCase("Казань")) toCode = "1600000100000000000000000";
+                    if (to.equalsIgnoreCase("Краснодар")) toCode = "2300000100000000000000000";
+                    if (to.equalsIgnoreCase("Нижний Новгород")) toCode = "5200000100000000000000000";
+                    if (to.equalsIgnoreCase("НОВОСИБИРСК")) toCode = "5400000100000000000000000";
+                    if (to.equalsIgnoreCase("Омск")) toCode = "5500000100000000000000000";
+                    if (to.equalsIgnoreCase("Ростов-на-Дону")) toCode = "6100000100000000000000000";
+                    if (to.equalsIgnoreCase("Самара")) toCode = "6300000100000000000000000";
+                    if (to.equalsIgnoreCase("Санкт-Петербург")) toCode = "7800000000000000000000000";
+                                                                          780000000000000000000
+                    if (to.equalsIgnoreCase("Саратов")) toCode = "6400000100000000000000000";
+                    if (to.equalsIgnoreCase("Ставрополь")) toCode = "2600000100000000000000000";
+                    if (to.equalsIgnoreCase("Уфа")) toCode = "200000100000000000000000";
+                    if (to.equalsIgnoreCase("Челябинск")) toCode = "7400000100000000000000000";
+                    if (to.equalsIgnoreCase("Апатиты")) toCode = "5100000200000000000000000";
+                    if (to.equalsIgnoreCase("Архангельск")) toCode = "2900000100000000000000000";
+                    if (to.equalsIgnoreCase("Вельск")) toCode = "2900200100000000000000000";
+                    if (to.equalsIgnoreCase("Вологда")) toCode = "3500000100000000000000000";
+                    if (to.equalsIgnoreCase("Евпатория")) toCode = "9100000900000000000000000";
+                    if (to.equalsIgnoreCase("Калининград")) toCode = "3900000100000000000000000";
+                    if (to.equalsIgnoreCase("Кандалакша")) toCode = "5100000400000000000000000";
+                    if (to.equalsIgnoreCase("Керчь")) toCode = "9100000100000000000000000";
+                    if (to.equalsIgnoreCase("Киров")) toCode = "4300000100000000000000000";
+                    if (to.equalsIgnoreCase("Котлас")) toCode = "2900800100000000000000000";
+                    if (to.equalsIgnoreCase("Мончегорск")) toCode = "5100000600000000000000000";
+                    if (to.equalsIgnoreCase("Мурманск")) toCode = "5100000100000000000000000";
+                    if (to.equalsIgnoreCase("Набережные Челны")) toCode = "1600000200000000000000000";
+                    if (to.equalsIgnoreCase("Пенза")) toCode = "5800000100000000000000000";
+                    if (to.equalsIgnoreCase("Пермь")) toCode = "5900000100000000000000000";
+                    if (to.equalsIgnoreCase("Петрозаводск")) toCode = "1000000100000000000000000";
+                    if (to.equalsIgnoreCase("Севастополь")) toCode = "9200000000000000000000000";
+                    if (to.equalsIgnoreCase("Симферополь")) toCode = "9100000700000000000000000";
+                    if (to.equalsIgnoreCase("Сыктывкар")) toCode = "1100000100000000000000000";
+                    if (to.equalsIgnoreCase("Ухта")) toCode = "1100000800000000000000000";
+                    if (to.equalsIgnoreCase("Ялта")) toCode = "9100000800000000000000000";
+                    if (to.equalsIgnoreCase("Череповец")) toCode = "3500000200000000000000000";
+                    if (to.equalsIgnoreCase("Феодосия")) toCode = "9100001000000000000000000";*/
+                   // System.out.println("tocode= " + toCode);
 
                     //// cell = sheet.getCell(27, row);
                     //  cost = Integer.parseInt(cell.getContents());
 
                     //Thread.sleep(1000);
 
-                    cell = sheet.getCell(8, i); //ves
+                    cell = sheet.getCell(10, i); //ves
                     //    System.out.println("is= " + cell.getContents().toString().replaceAll(",", "."));
-                    weight = Double.parseDouble(cell.getContents().toString().replaceAll(",", "."));
+                    weight = Double.parseDouble(cell.getContents().replaceAll(",", "."));
+
+                    cell = sheet.getCell(11, i); //volume
+                    //  System.out.print(cell.getContents().toString().replaceAll(",", "."));
+                    volume = Double.parseDouble(cell.getContents().replaceAll(",", "."));
+
 
                 } catch (SeleniumException e) {
+                    System.out.print("DoesntRecognized");
                 }
 
 
                 HttpClient httpClient = HttpClientBuilder.create().build();
 
                 HttpPost request = new HttpPost("https://api.dellin.ru/v1/public/calculator.json");
-                StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",\"derivalPoint\":\"" + fromCode + "\",\"derivalDoor\":true,\"arrivalPoint\":\"" + toCode + "\",\"arrivalDoor\":true,\"sizedVolume\":\"0.13\",\"sizedWeight\":\"" + weight + "\"}");
+                StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",\"derivalPoint\":\"200000100000000000000000\",\"derivalDoor\":true,\"arrivalPoint\":\"" + toCode + "\",\"arrivalDoor\":true,\"sizedVolume\":\""+volume + "\",\"sizedWeight\":\"" + weight + "\"}");
+
                 request.addHeader("content-type", "application/javascript");
                 request.setEntity(params);
-
+                //  System.out.println(params.getContent().toString());
                 HttpResponse response = httpClient.execute(request);
-                System.out.println(response);
+                 //   System.out.println(response);
 
                 HttpEntity entity = response.getEntity();
                 InputStream instream = entity.getContent();
@@ -150,30 +205,30 @@ public class requestDellin {
                 }
                 String ss = sb.toString();
                 // now you have the string representation of the HTML request
-                // System.out.println("RESPONSE: " + ss);
+               // System.out.println("RESPONSE: " + ss);
                 instream.close();
 
                 // Thread.sleep(90000);
 
                 JsonParser parser = new JsonParser();//response.toString()
 
-                JsonObject mainObject = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("intercity");
+                JsonObject mainObject = parser.parse(ss).getAsJsonObject();
                 MTcost = mainObject.getAsJsonPrimitive("price").getAsString();
-                System.out.println("intercity= " + MTcost);
+                //   System.out.println("intercity= " + MTcost);
 
-                JsonObject mainObject2 = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("derival");
+                JsonObject mainObject2 = parser.parse(ss).getAsJsonObject().getAsJsonObject("derival");
                 priceFrom = mainObject2.getAsJsonPrimitive("price").getAsString();
-                System.out.println("priceFrom= " + priceFrom);
+                //   System.out.println("priceFrom= " + priceFrom);
 
                 fromm = mainObject2.get("terminal").getAsString();
-                System.out.println("from= " + fromm);
+                //   System.out.println("from= " + fromm);
 
-                JsonObject mainObject3 = parser.parse(ss.toString()).getAsJsonObject().getAsJsonObject("arrival");
+                JsonObject mainObject3 = parser.parse(ss).getAsJsonObject().getAsJsonObject("arrival");
                 derival = mainObject3.get("terminal").getAsString();
-                System.out.println("to= " + derival);
-                String arrival = mainObject3.get("price").getAsString();
+                    System.out.println("to= " + derival.toString());
+
                 priceTO = mainObject3.get("price").getAsString();
-                System.out.println("priceTO= " + priceTO);
+                //     System.out.println("priceTO= " + priceTO);
 
                 //     System.out.println("weight= " + weight);
 
@@ -183,13 +238,13 @@ public class requestDellin {
                     //if (userObject.get("type").getAsString().equals("avto")) {
                     //        System.out.print(userObject.get("price"));
 
-                    Label label0 = new Label(0, i, fromm);
+                    Label label0 = new Label(0, i, from);
                     Label label1 = new Label(1, i, to);
                     Label label2 = new Label(2, i, MTcost);
                     Label label3 = new Label(3, i, priceFrom);
                     Label label4 = new Label(4, i, priceTO);
                     Label label5 = new Label(6, i, weight.toString());
-
+                    Label label6 = new Label(7, i, volume.toString());
 
                     writableSheet.addCell(label0);
                     writableSheet.addCell(label1);
@@ -197,15 +252,18 @@ public class requestDellin {
                     writableSheet.addCell(label3);
                     writableSheet.addCell(label4);
                     writableSheet.addCell(label5);
-                    System.out.println(i);
+                    writableSheet.addCell(label6);
+                    if (count==10){
+                        System.out.println(i);count=0;}
+                    else count++;
 
                     //return;
-                } catch (Exception e) {
+                } catch (Exception e) {System.out.print("exc");
                 }
 
             }
 
-        } catch (Exception e) {
+        } catch (Exception e) {System.out.print("exc2");
         } finally {
             writableWorkbook.write();
             writableWorkbook.close();
