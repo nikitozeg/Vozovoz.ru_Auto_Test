@@ -2,7 +2,6 @@ package requests;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.thoughtworks.selenium.SeleniumException;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -61,7 +60,7 @@ public class requestDellin {
 
             String to = ""; String from = "";
 
-            for (int i = 33; i < 40; i++) {//2585
+            for (int i = 1; i < 2585; i++) {//2585
                 try {
                     weight=0.0;
                     volume=0.0;
@@ -201,7 +200,7 @@ public class requestDellin {
                     if (to.equalsIgnoreCase("Кемерово")) toCode = "4200000900000000000000000";
                     if (to.equalsIgnoreCase("Красноярск")) toCode = "2400000100000000000000000";
                     if (to.equalsIgnoreCase("Ленинск-Кузнецкий")) toCode = "4200001000000000000000000";
-                    if (to.equalsIgnoreCase("МО")) toCode = "5000000000000000000000000";
+                    if (to.equalsIgnoreCase("МО")) throw new Exception();
                     if (to.equalsIgnoreCase("Красноярск")) toCode = "2400000100000000000000000";
                     if (to.equalsIgnoreCase("Новокузнецк")) toCode = "4200001200000000000000000";
                     if (to.equalsIgnoreCase("Томск")) toCode = "7000000100000000000000000";
@@ -228,9 +227,7 @@ public class requestDellin {
                     insurance = Double.parseDouble(cell.getContents().replaceAll(",", "."));
 
 
-                } catch (SeleniumException e) {
-                    System.out.print("DoesntRecognized");
-                }
+
 
 
                 HttpClient httpClient = HttpClientBuilder.create().build();
@@ -239,7 +236,7 @@ public class requestDellin {
                 StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",    \"derivalPoint\":\"" + fromCode + "\",\"derivalDoor\":true,\"arrivalPoint\":\"" + toCode + "\"," +
                         "\"arrivalDoor\":true,\"sizedVolume\":\""+volume + "\",\"sizedWeight\":\"" + weight + "\",\"statedValue\":\"" + insurance+ "\"}");
 
-                String inputLine ;
+              /*  String inputLine ;
                 BufferedReader br = new BufferedReader(new InputStreamReader(params.getContent()));
                 try {
                     while ((inputLine = br.readLine()) != null) {
@@ -249,7 +246,7 @@ public class requestDellin {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
+*/
 
                 request.addHeader("content-type", "application/javascript");
                 request.setEntity(params);
@@ -349,7 +346,13 @@ public class requestDellin {
                 } catch (Exception e) {System.out.print("exc");
                 }
 
-            }
+
+                } catch (Exception e) {
+                    Label label0 = new Label(0, i, "Моск Обл");
+                    writableSheet.addCell(label0);
+                    System.out.print("DoesntRecognized");
+                }
+                }
 
         } catch (Exception e) {System.out.print("exc2");
         } finally {
