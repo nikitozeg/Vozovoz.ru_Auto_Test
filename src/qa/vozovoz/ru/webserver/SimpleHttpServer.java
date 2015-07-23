@@ -26,14 +26,14 @@ import java.util.Map;
 public class SimpleHttpServer {
 
     public static void main(String[] args) throws Exception {
-      //  SimpleHttpServer.setMapOfUidTerminals();
+        //  SimpleHttpServer.setMapOfUidTerminals();
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
         server.createContext("/", new MyHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }
 
-    public static Map setMapOfUidTerminals() throws Exception{
+    public static Map setMapOfUidTerminals() throws Exception {
         Map mapobj = new HashMap<>();
 
         HttpClient httpClient = HttpClientBuilder.create().build();
@@ -66,7 +66,7 @@ public class SimpleHttpServer {
             }
         }
 
-         System.out.println("RESPONSE: " + sb);
+        System.out.println("RESPONSE: " + sb);
         String ss = sb.toString();
 
         return mapobj;
@@ -76,7 +76,7 @@ public class SimpleHttpServer {
         String kladr = "";
         HttpClient httpClient1 = HttpClientBuilder.create().build();
         HttpPost request1 = new HttpPost("https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address");
-        StringEntity params1 = new StringEntity("{\"count\":1,\"query\":\"" + address + "\"}", "utf-8");
+        StringEntity params1 = new StringEntity("{\"count\":2,\"query\":\"" + address + "\"}", "utf-8");
         request1.addHeader("content-type", "application/json");
         request1.addHeader("Authorization", "Token 84beb76a98914195f374779f2f313d31efca3c5d");
         request1.addHeader("X-Secret", "cb82deee2d367b967ba569b5fc11b9e21a8c4832");
@@ -118,10 +118,10 @@ public class SimpleHttpServer {
 
     }
 
-    public static String getDlResponseInJson(String fromAddress, String toAddress, String volume, String weight, String insuranceCost) throws Exception {
+    public static String getDlResponseInJson(String fromAddress, String toAddress, String volume, String weight, String insuranceCost, Boolean derivalDoor, Boolean arrivalDoor) throws Exception {
         HttpClient httpClient = HttpClientBuilder.create().build();
 
-        JsonParser parser = new JsonParser();
+//        JsonParser parser = new JsonParser();
         String kladrFrom = getKladr(fromAddress);
         String kladrTo = getKladr(toAddress);
         if (insuranceCost == null) insuranceCost = "0";
@@ -132,8 +132,8 @@ public class SimpleHttpServer {
         System.out.println(insuranceCost);
 */
         HttpPost request = new HttpPost("https://api.dellin.ru/v1/public/calculator.json");
-        StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",    \"derivalPoint\":\"" + kladrFrom + "\",\"derivalDoor\":true,\"arrivalPoint\":\"" + kladrTo + "\"," +
-                "\"arrivalDoor\":true,\"sizedVolume\":\"" + volume + "\",\"sizedWeight\":\"" + weight + "\",\"statedValue\":\"" + insuranceCost + "\"}", "UTF-8");
+        StringEntity params = new StringEntity("{\"appKey\":\"8E6F26C2-043D-11E5-8F8A-00505683A6D3\",    \"derivalPoint\":\"" + kladrFrom + "\",\"derivalDoor\":" + derivalDoor + ",\"arrivalPoint\":\"" + kladrTo + "\"," +
+                "\"arrivalDoor\":" + arrivalDoor + ",\"sizedVolume\":\"" + volume + "\",\"sizedWeight\":\"" + weight + "\",\"statedValue\":\"" + insuranceCost + "\"}", "UTF-8");
 
         request.addHeader("content-type", "application/json; charset=utf-8");
         //request.addHeader("Accept-Language","ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4");
@@ -177,6 +177,7 @@ public class SimpleHttpServer {
 
         private String fromAddress, toAddress, volume, weight, insuranceCost;
         Double priceFrom, priceTo, summa, intercity, insuranceResponse;
+        Boolean derivalDoor, arrivalDoor;
 
         public void handle(HttpExchange t) throws IOException {
             JsonParser parser = new JsonParser();
@@ -215,31 +216,40 @@ public class SimpleHttpServer {
             headers.add("Access-Control-Max-Age", "3600");
             headers.add("Access-Control-Allow-Headers", "x-requested-with, authorization, content-type");
 
-            JsonObject useppv = parser.parse(sbVoz.toString()).getAsJsonObject();
-            if (useppv.getAsJsonObject("from").get("useppv").getAsString().equalsIgnoreCase("false"))
-                fromAddress = useppv.getAsJsonObject("from").getAsJsonObject("address").get("value").getAsString();
-            if (useppv.getAsJsonObject("to").get("useppv").getAsString().equalsIgnoreCase("false"))
-                toAddress = useppv.getAsJsonObject("to").getAsJsonObject("address").get("value").getAsString();
-
-           /* try {
-                summaVOZ = vozObj.get("cost").toString();
-                summaVOZAction = vozObj.get("actionCost").toString();
-            } catch (Exception e) {
-                throw new Exception(e);
-            }*/
-
-            volume = useppv.getAsJsonObject("cargo").getAsJsonObject("total").getAsJsonObject("all").get("volume").getAsString();
-            weight = useppv.getAsJsonObject("cargo").getAsJsonObject("total").getAsJsonObject("all").get("weight").getAsString();
             try {
-                if (useppv.getAsJsonObject("cargo").get("weight").getAsString().equalsIgnoreCase("true"))
+                JsonObject useppv = parser.parse(sbVoz.toString()).getAsJsonObject();
+
+                if (useppv.getAsJsonObject("from").get("useppv").getAsString().equalsIgnoreCase("false")) {
+                    fromAddress = useppv.getAsJsonObject("from").getAsJsonObject("address").get("value").getAsString();
+                    derivalDoor = true;
+                } else {
+                    fromAddress = useppv.getAsJsonObject("from").getAsJsonObject("terminal").get("address").getAsString();
+                    derivalDoor = false;
+                }
+
+                if (useppv.getAsJsonObject("to").get("useppv").getAsString().equalsIgnoreCase("false")) {
+                    toAddress = useppv.getAsJsonObject("to").getAsJsonObject("address").get("value").getAsString();
+                    arrivalDoor = true;
+                } else {
+                    toAddress = useppv.getAsJsonObject("to").getAsJsonObject("terminal").get("address").getAsString();
+                    arrivalDoor = false;
+                }
+
+                volume = useppv.getAsJsonObject("cargo").getAsJsonObject("total").getAsJsonObject("all").get("volume").getAsString();
+                weight = useppv.getAsJsonObject("cargo").getAsJsonObject("total").getAsJsonObject("all").get("weight").getAsString();
+
+                if (useppv.getAsJsonObject("cargo").get("insurance").getAsString().equalsIgnoreCase("true"))
                     insuranceCost = useppv.getAsJsonObject("cargo").get("insuranceCost").getAsString();
                 else insuranceCost = "0";
             } catch (Exception e) {
-
+                t.sendResponseHeaders(200, 0);
+                OutputStream os = t.getResponseBody();
+                os.write("Can't parse body request 1".getBytes());
+                os.close();
             }
 
             try {
-                String ss=getDlResponseInJson(fromAddress, toAddress, volume, weight, insuranceCost);
+                String ss = getDlResponseInJson(fromAddress, toAddress, volume, weight, insuranceCost, derivalDoor, arrivalDoor);
                 JsonObject mainObject = parser.parse(ss).getAsJsonObject();
                 summa = mainObject.getAsJsonPrimitive("price").getAsDouble();
 
@@ -274,14 +284,16 @@ public class SimpleHttpServer {
                 System.out.println(summa);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                t.sendResponseHeaders(200, 0);
+                OutputStream os = t.getResponseBody();
+                os.write("Can't parse body request 2".getBytes());
+                os.close();
             }
 
 
-
-            String response = "{\"data\":{\"cost\":"+summa+",\"price\":[{\"ID\":\"06\",\"Name\":\"Перевозка между городами\",\"Cost\":"+intercity+"},{\"ID\":\"01\",\"Name\":\"Забор груза от клиента\",\"Cost\":"+priceFrom+"}," +
-                    "{\"ID\":\"04\",\"Name\":\"Отвоз груза клиенту\",\"Cost\":"+priceTo+"},{\"ID\":\"10\",\"Name\":\"Страхование грузов\",\"Cost\":7.1,\"ActionCost\":7.1}],\"calculationId\":\"55b0adaacfe0ccfb77d7a955\"}}";
-       // priceFrom, priceTo, summa, intercity, insuranceResponse;
+            String response = "{\"data\":{\"cost\":" + summa + ",\"price\":[{\"ID\":\"06\",\"Name\":\"Перевозка между городами\",\"Cost\":" + intercity + "},{\"ID\":\"01\",\"Name\":\"Забор груза от клиента\",\"Cost\":" + priceFrom + "}," +
+                    "{\"ID\":\"04\",\"Name\":\"Отвоз груза клиенту\",\"Cost\":" + priceTo + "},{\"ID\":\"10\",\"Name\":\"Страхование грузов\",\"Cost\":7.1,\"ActionCost\":7.1}],\"calculationId\":\"55b0adaacfe0ccfb77d7a955\"}}";
+            // priceFrom, priceTo, summa, intercity, insuranceResponse;
             t.sendResponseHeaders(200, 0);
 
 
