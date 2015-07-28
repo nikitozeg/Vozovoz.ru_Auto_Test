@@ -10,71 +10,28 @@ import com.sun.net.httpserver.HttpServer;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
 
 /*
  * a simple static http server
 */
 public class SimpleHttpServer {
-
+    static HttpClient httpClient = HttpClientBuilder.create().build();
     public static void main(String[] args) throws Exception {
-        //  SimpleHttpServer.setMapOfUidTerminals();
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
         server.createContext("/", new MyHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }
 
-    public static Map setMapOfUidTerminals() throws Exception {
-        Map mapobj = new HashMap<>();
-
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpGet request = new HttpGet("http://vozovoz.ru/api/v1/terminals?limit=10");
-
-        request.addHeader("content-type", "application/json; charset=utf-8");
-        //request.addHeader("Accept-Language","ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4");
-
-        HttpResponse response = httpClient.execute(request);
-        HttpEntity entity = response.getEntity();
-        // EntityUtils.toString(sb, "UTF-8");
-        InputStream instream = entity.getContent();
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
-        StringBuilder sb = new StringBuilder();
-
-
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                instream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("RESPONSE: " + sb);
-        String ss = sb.toString();
-
-        return mapobj;
-    }
-
     public static String getKladr(String address) throws Exception {
         String kladr = "";
-        HttpClient httpClient1 = HttpClientBuilder.create().build();
+
         HttpPost request1 = new HttpPost("https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address");
         StringEntity params1 = new StringEntity("{\"count\":2,\"query\":\"" + address + "\"}", "utf-8");
         request1.addHeader("content-type", "application/json");
@@ -82,7 +39,7 @@ public class SimpleHttpServer {
         request1.addHeader("X-Secret", "cb82deee2d367b967ba569b5fc11b9e21a8c4832");
         request1.setEntity(params1);
 
-        HttpResponse response1 = httpClient1.execute(request1);
+        HttpResponse response1 = SimpleHttpServer.httpClient.execute(request1);
         HttpEntity entity1 = response1.getEntity();
         InputStream instream1 = entity1.getContent();
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(instream1));
@@ -119,9 +76,8 @@ public class SimpleHttpServer {
     }
 
     public static String getDlResponseInJson(String fromAddress, String toAddress, String volume, String weight, String insuranceCost, Boolean derivalDoor, Boolean arrivalDoor) throws Exception {
-        HttpClient httpClient = HttpClientBuilder.create().build();
 
-//        JsonParser parser = new JsonParser();
+        JsonParser parser = new JsonParser();
         String kladrFrom = getKladr(fromAddress);
         String kladrTo = getKladr(toAddress);
         if (insuranceCost == null) insuranceCost = "0";
@@ -139,7 +95,7 @@ public class SimpleHttpServer {
         //request.addHeader("Accept-Language","ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4");
         request.setEntity(params);
 
-        HttpResponse response = httpClient.execute(request);
+        HttpResponse response = SimpleHttpServer.httpClient.execute(request);
         HttpEntity entity = response.getEntity();
         // EntityUtils.toString(sb, "UTF-8");
         InputStream instream = entity.getContent();
@@ -179,6 +135,7 @@ public class SimpleHttpServer {
         Double priceFrom, priceTo, summa, intercity, insuranceResponse;
         Boolean derivalDoor, arrivalDoor;
 
+
         public void handle(HttpExchange t) throws IOException {
             JsonParser parser = new JsonParser();
 
@@ -212,9 +169,10 @@ public class SimpleHttpServer {
             //   headers.add("Access-Control-Allow-Methods:", "GET, POST, OPTIONS, PUT, DELETE");
             headers.add("text/html", "charset=utf-8");
             headers.add("Access-Control-Allow-Origin", "*");
-            headers.add("Access-Control-Allow-Methods", "POST, OPTIONS");
+            headers.add("Access-Control-Allow-Methods", "POST");
             headers.add("Access-Control-Max-Age", "3600");
             headers.add("Access-Control-Allow-Headers", "x-requested-with, authorization, content-type");
+            headers.add("Content-Type", "application/json; charset=utf-8");
 
             try {
                 JsonObject useppv = parser.parse(sbVoz.toString()).getAsJsonObject();
@@ -240,7 +198,7 @@ public class SimpleHttpServer {
 
                 if (useppv.getAsJsonObject("cargo").get("insurance").getAsString().equalsIgnoreCase("true"))
                     insuranceCost = useppv.getAsJsonObject("cargo").get("insuranceCost").getAsString();
-                else insuranceCost = "0";
+                else insuranceCost = null;
             } catch (Exception e) {
                 t.sendResponseHeaders(200, 0);
                 OutputStream os = t.getResponseBody();
@@ -249,6 +207,13 @@ public class SimpleHttpServer {
             }
 
             try {
+                summa=0.;
+                priceFrom=0.;
+                priceTo=0.;
+                intercity=0.;
+
+
+
                 String ss = getDlResponseInJson(fromAddress, toAddress, volume, weight, insuranceCost, derivalDoor, arrivalDoor);
                 JsonObject mainObject = parser.parse(ss).getAsJsonObject();
                 summa = mainObject.getAsJsonPrimitive("price").getAsDouble();
@@ -290,9 +255,12 @@ public class SimpleHttpServer {
                 os.close();
             }
 
+            String addInsuranceObj="";
+            if (!(insuranceCost==null))
+                addInsuranceObj=",{\"ID\":\"10\",\"Name\":\"Страхование грузов\",\"Cost\":"+insuranceResponse+"}";
 
             String response = "{\"data\":{\"cost\":" + summa + ",\"price\":[{\"ID\":\"06\",\"Name\":\"Перевозка между городами\",\"Cost\":" + intercity + "},{\"ID\":\"01\",\"Name\":\"Забор груза от клиента\",\"Cost\":" + priceFrom + "}," +
-                    "{\"ID\":\"04\",\"Name\":\"Отвоз груза клиенту\",\"Cost\":" + priceTo + "},{\"ID\":\"10\",\"Name\":\"Страхование грузов\",\"Cost\":7.1,\"ActionCost\":7.1}],\"calculationId\":\"55b0adaacfe0ccfb77d7a955\"}}";
+                    "{\"ID\":\"04\",\"Name\":\"Отвоз груза клиенту\",\"Cost\":" + priceTo + "}"+addInsuranceObj+"],\"calculationId\":\"55b0adaacfe0ccfb77d7a955\"}}";
             // priceFrom, priceTo, summa, intercity, insuranceResponse;
             t.sendResponseHeaders(200, 0);
 
